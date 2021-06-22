@@ -15,7 +15,7 @@ class TodoController{
         let { title, description, status, due_date } = req.body
         Todo.create({ title, description, status, due_date })
         .then(result => {
-            res.status(201).json(result)
+            res.status(200).json(result)
         })
         .catch(err => {
             res.status(500).json(err)
@@ -44,7 +44,7 @@ class TodoController{
                 returning: true
             })
         .then(result => {
-            res.status(201).json(result)
+            res.status(200).json(result)
         })
         .catch(err => {
             res.status(500).json(err)

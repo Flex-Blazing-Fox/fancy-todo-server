@@ -16,7 +16,7 @@ class TodoController{
         let { title, desc, status, due_date } = req.body
         Todo.create({ title, desc, status, due_date })
         .then(result => {
-            res.status(201).json(result)
+            res.status(200).json(result)
         })
         .catch(err => {
             if(err.errors[0].message=="Validation isAfter on due_date failed"){

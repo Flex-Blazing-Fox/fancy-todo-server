@@ -1,4 +1,6 @@
 'use strict';
+let today = new Date()
+today = today.toString()
 const {
   Model
 } = require('sequelize');
@@ -17,10 +19,14 @@ module.exports = (sequelize, DataTypes) => {
     title: DataTypes.STRING,
     desc: DataTypes.STRING,
     status: DataTypes.STRING,
-    due_date: DataTypes.DATE
+    due_date: {
+      type: DataTypes.DATE,
+      validate: {isAfter: today}
+    }
   }, {
     sequelize,
     modelName: 'Todo',
   });
+  
   return Todo;
 };

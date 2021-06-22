@@ -1,6 +1,9 @@
 'use strict';
-let today = new Date()
-today = today.toString()
+const today = new Date()
+let yesterday = new Date(today)
+yesterday.setDate(yesterday.getDate() - 1)
+yesterday = yesterday.toString()
+
 const {
   Model
 } = require('sequelize');
@@ -21,7 +24,7 @@ module.exports = (sequelize, DataTypes) => {
     status: DataTypes.STRING,
     due_date: {
       type: DataTypes.DATE,
-      validate: {isAfter: today}
+      validate: {isAfter: yesterday}
     }
   }, {
     sequelize,

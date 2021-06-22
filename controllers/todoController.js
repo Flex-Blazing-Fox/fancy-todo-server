@@ -4,7 +4,12 @@ class TodoController{
     static getAll(req, res) {
         Todo.findAll()
         .then(data => {
-            res.status(200).json(data)
+            if(data){
+                res.status(200).json({"code":200,"message":"Success",data})
+            }else{
+                res.status(200).json({"code":200,"message":"Success","data":null})
+            }
+            
         })
         .catch(err => {
             res.status(500).json(err)
@@ -38,7 +43,7 @@ class TodoController{
             res.status(200).json(data)
         })
         .catch(err => {
-            res.status(500).json(err)
+            res.status(404).json(err)
         })
     }
 
@@ -57,7 +62,7 @@ class TodoController{
             }
         )
         .then(data => {
-            res.status(201).json(data)
+            res.status(200).json(data)
         })
         .catch(err => {
             res.status(500).json(err)
@@ -81,11 +86,12 @@ class TodoController{
 
     static deleteTodos(req, res) {
         const { id } = req.params
-        Todo.delete({
-            where:{id: +id}
+        Todo.destroy({
+            where:{id: +id},
+            returning:true
         })
         .then(data => {
-            res.status(201).json(data)
+            res.status(201).json(data[1])
         })
         .catch(err => {
             res.status(500).json(err)

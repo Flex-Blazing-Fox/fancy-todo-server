@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken')
 const TOKEN_SECRET = 'arjun'
 
-const token = (payload) => {
+const generateToken = (payload) => {
   return jwt.sign(payload, TOKEN_SECRET)
 }
 
@@ -10,6 +10,6 @@ const decode = (token) => {
 }
 
 module.exports = {
-  token,
+  generateToken,
   decode
 }

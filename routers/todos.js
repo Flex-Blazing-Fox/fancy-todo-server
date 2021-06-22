@@ -1,7 +1,9 @@
-const express = require( 'express')
-const TodosController = require( '../controllers/TodosController')
-
+const express = require('express')
+const TodosController = require('../controllers/TodosController')
 const todosRouter = express.Router()
+const authenticate = require('../middlewares/authenticate')
+
+todosRouter.use(authenticate)
 
 todosRouter.post('/', TodosController.postTodo)
 

@@ -2,7 +2,11 @@ const { Todo } = require('../models')
 
 class TodosController {
   static getTodos(req, res) {
-    Todo.findAll()
+    const { id } = res.locals.user
+
+    Todo.findAll({
+      where: { user_id: +id },
+    })
       .then((todos) => {
         return res.status(200).json(todos)
       })
@@ -27,12 +31,13 @@ class TodosController {
   }
 
   static postTodo(req, res) {
-    const { title, description, status, due_date } = req.body
+    const { title, description, due_date } = req.body
+    const { id } = res.locals.user
 
     Todo.create({
+      user_id: +id,
       title,
       description,
-      status,
       due_date,
     })
       .then((todo) => {
@@ -63,9 +68,7 @@ class TodosController {
       }
     )
       .then((todo) => {
-        const status = todo[0]
-
-        if (status === 1) {
+        if (todo[0] === 1) {
           const updatedTodo = todo[1][0]
           return res.status(200).json({ todo: updatedTodo })
         }

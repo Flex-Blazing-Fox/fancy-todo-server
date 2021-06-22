@@ -64,7 +64,42 @@ class todoController {
         }
       });
   }
-  static updateTodoRecord() {}
+  static updateTodoRecord(req, res) {
+    let { id } = req.params;
+    const keys = ["title", "description", "status", "due_date"];
+    let hasAllKeys = keys.every((item) => req.body.hasOwnProperty(item));
+    if (!hasAllKeys) {
+      res.status(500).json({
+        message: `All data (title, description, status, and due date) must be provided. Use patch instead.`,
+      });
+    } else {
+      let { title, description, status, due_date } = req.body;
+
+      Todo.update(
+        { title, description, status, due_date },
+        {
+          where: {
+            id: +id,
+          },
+          returning: true,
+        }
+      )
+        .then((result) => {
+          if (result[0] != 0) {
+            res.status(200).json(result[1]);
+          } else if (result[0] == 0) {
+            res.status(404).json({ message: `Record with id ${id} not found` });
+          }
+        })
+        .catch((err) => {
+          if (err.name === "SequelizeValidationError") {
+            res.status(400).json(err);
+          } else {
+            res.status(500).json(err);
+          }
+        });
+    }
+  }
   static deleteTodo() {}
 }
 

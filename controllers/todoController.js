@@ -30,7 +30,7 @@ class todo{
             res.status(201).json(result)
         })
         .catch(err => {
-           res.status(500).json({err:err.message})
+           res.status(500).json({"message":err.message})
           })
     }
 

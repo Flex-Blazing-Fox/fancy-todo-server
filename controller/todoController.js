@@ -68,7 +68,7 @@ class TodoController{
 
     static delete(req, res) {
         const { id } = req.params
-        Todo.delete({
+        Todo.destroy({
             where:{id: +id}
         })
         .then(result => {

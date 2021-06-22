@@ -48,16 +48,21 @@ class todoController {
         id: +id,
       },
       returning: true,
-      plain: true,
     })
       .then((result) => {
-        if (result.id) {
+        if (result[0] != 0) {
           res.status(200).json(result[1]);
         } else {
           res.status(404).json({ message: `Record with id ${id} not found` });
         }
       })
-      .catch((err) => res.json(err));
+      .catch((err) => {
+        if (err.name === "SequelizeValidationError") {
+          res.status(400).json(err);
+        } else {
+          res.status(500).json(err);
+        }
+      });
   }
   static updateTodoRecord() {}
   static deleteTodo() {}

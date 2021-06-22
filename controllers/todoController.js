@@ -69,7 +69,7 @@ class todoController {
     const keys = ["title", "description", "status", "due_date"];
     let hasAllKeys = keys.every((item) => req.body.hasOwnProperty(item));
     if (!hasAllKeys) {
-      res.status(500).json({
+      res.status(400).json({
         message: `All data (title, description, status, and due date) must be provided. Use patch instead.`,
       });
     } else {
@@ -100,7 +100,23 @@ class todoController {
         });
     }
   }
-  static deleteTodo() {}
+  static deleteTodo(req, res) {
+    let { id } = req.params;
+    Todo.destroy({
+      where: {
+        id: +id,
+      },
+      returning: true,
+    })
+      .then((result) => {
+        if (result != 0) {
+          res.status(200).json({message: `Record with id ${id} successfully deleted`});
+        } else if (result == 0) {
+          res.status(404).json({ message: `Record with id ${id} not found` });
+        }
+      })
+      .catch((err) => res.status(500).json(err));
+  }
 }
 
 module.exports = todoController;

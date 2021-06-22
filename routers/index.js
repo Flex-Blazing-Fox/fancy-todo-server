@@ -1,3 +1,7 @@
-const routers = require("express").Router()
+const routers = require("express").Router();
+const todoRouter = require("./todoRouter");
 
-module.exports = routers
+routers.use("/todo", todoRouter);
+routers.get("/", (_, res) => res.status(200).send("Welcome"));
+
+module.exports = routers;

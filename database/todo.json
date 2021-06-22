@@ -1,0 +1,20 @@
+[
+    {
+        "title": "Truncate Saving Accounts DAG",
+        "description": "After the fix for different accrued interest is merged, the dwh core saving accounts need to be merged.",
+        "status": "to execute",
+        "due_date": "2021-06-23 02:00:00"
+    },
+    {
+        "title": "Prevent Dying DAGS from Exceeding Concurrent Query Limit in BigQuery",
+        "description": "Add retries to all of DAGs and change the query default mode to batching. Only provide the interactive mode if the developer need it.",
+        "status": "to code",
+        "due_date": "2021-06-23 06:00:00"
+    },
+    {
+        "title": "Change the Datetime of Mambu Data Insertion",
+        "description": "Currenty our inserted datetime of Mambu DAG is not correct enough and causing some missing data.",
+        "status": "to plan",
+        "due_date": "2021-06-23 06:00:00"
+    }
+]

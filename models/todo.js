@@ -14,6 +14,7 @@ module.exports = (sequelize, DataTypes) => {
   Todo.init({
     title: {
       type : DataTypes.STRING,
+      allowNull: false,
       validate : {
         notEmpty : true
       }
@@ -21,6 +22,7 @@ module.exports = (sequelize, DataTypes) => {
 
     description: {
       type : DataTypes.STRING,
+      allowNull: false,
       validate : {
         notEmpty : true
       }
@@ -28,6 +30,7 @@ module.exports = (sequelize, DataTypes) => {
 
     status: {
       type : DataTypes.BOOLEAN,
+      allowNull: false,
       validate : {
         notEmpty : true
       }
@@ -35,6 +38,7 @@ module.exports = (sequelize, DataTypes) => {
 
     due_date: {
       type : DataTypes.DATE,
+      allowNull: false,
       validate : {
         isAfter: {
           args: new Date().toISOString(),
@@ -42,14 +46,15 @@ module.exports = (sequelize, DataTypes) => {
         },
       },
     }, 
-  }, 
+    userId : DataTypes.INTEGER, 
+  },
   {
     sequelize,
     modelName: 'Todo',
   });
 
   Todo.associate = function (models) {
-    Todo.belongsTo(models.User, {foreignKey: "useerId"})
+    Todo.belongsTo(models.User, {foreignKey: "userId"})
   }
   return Todo;
 };

@@ -14,12 +14,41 @@ module.exports = (sequelize, DataTypes) => {
     }
   };
   Todo.init({
-    title: DataTypes.STRING,
-    description: DataTypes.STRING,
+    title: {
+      type: DataTypes.STRING,
+      validate:{
+        notEmpty: {
+          arg: true,
+          msg: "Title tidak boleh kosong"
+        }
+      }
+    },
+    description: {
+      type: DataTypes.STRING,
+      validate: {
+        notEmpty: {
+          arg: true,
+          msg: "Description tidak boleh kosong"
+        }
+      }
+    },
     status: DataTypes.STRING,
-    due_date: DataTypes.DATE
+    due_date: { 
+      type:DataTypes.DATE,
+      validate: {
+        isAfter: {
+          arg: new Date(),
+          msg: "Tanggal Tidak boleh kurang dari tanggal saat ini"
+        }
+      }
+    },
   }, {
     sequelize,
+    hooks: {
+      beforeCreate: (todo) => {
+        todo.status = 'belum selesai'
+      }
+    },
     modelName: 'Todo',
   });
   return Todo;

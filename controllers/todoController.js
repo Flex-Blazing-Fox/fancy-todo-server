@@ -4,12 +4,7 @@ class TodoController{
     static getAll(req, res) {
         Todo.findAll()
         .then(data => {
-            if(data){
-                res.status(200).json({"code":200,"message":"Success",data})
-            }else{
-                res.status(200).json({"code":200,"message":"Success","data":null})
-            }
-            
+            res.status(200).json({"code":200,"message":"Success",data})
         })
         .catch(err => {
             res.status(500).json(err)
@@ -27,7 +22,7 @@ class TodoController{
             }
         )
         .then(data => {
-            res.status(201).json(data)
+            res.status(201).json({"code":201,"message":"Success",data})
         })
         .catch(err => {
             res.status(500).json(err)
@@ -40,7 +35,11 @@ class TodoController{
             where: {id: +id}
         })
         .then(data => {
-            res.status(200).json(data)
+            if (!data) {
+                res.status(404).json({"message":"Data Not Found"})
+            } else {
+                res.status(200).json(data)
+            }
         })
         .catch(err => {
             res.status(404).json(err)
@@ -58,11 +57,16 @@ class TodoController{
                 due_date 
             },
             {
-                where: {id: +id}
+                where: {id: +id},
+                returning: true
             }
         )
         .then(data => {
-            res.status(200).json(data)
+            if (data[0] === 1) {
+                res.status(200).json(data[1])
+            } else {
+                res.status(404).json({"message":"Data Not Found"})
+            }
         })
         .catch(err => {
             res.status(500).json(err)
@@ -77,7 +81,11 @@ class TodoController{
             returning: true
         })
         .then(data => {
-            res.status(200).json(data[1])
+            if (data[0] === 1) {
+                res.status(200).json(data[1])
+            } else {
+                res.status(404).json({"message":"Data Not Found"})
+            }
         })
         .catch(err => {
             res.status(500).json(err)
@@ -87,11 +95,14 @@ class TodoController{
     static deleteTodos(req, res) {
         const { id } = req.params
         Todo.destroy({
-            where:{id: +id},
-            returning:true
+            where:{id: +id}
         })
         .then(data => {
-            res.status(201).json(data[1])
+            if (data !== 0) {
+                res.status(201).json({"message":"Delete Successfull",data})
+            } else {
+                res.status(404).json({"message":"Data Not Found"})
+            }
         })
         .catch(err => {
             res.status(500).json(err)

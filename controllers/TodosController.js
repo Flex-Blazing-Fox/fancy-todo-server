@@ -3,7 +3,7 @@ const { Todo } = require('../models')
 class TodosController {
   static async getTodos(req, res) {
     const { id } = res.locals.user
-
+    
     try {
       const todos = await Todo.findAll({ where: { user_id: +id } })
 

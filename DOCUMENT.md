@@ -4,16 +4,16 @@
 
 http://localhost:3000
 
-# Movies
+# Fancy Todo
 
 ***Add***
 ----
-  Returns new movie.
+  Returns new todo.
 
 * **URL**
 
-  /movies
-
+  /todos
+<!-- 
 * **Method:**
 
   `POST`
@@ -135,4 +135,4 @@ http://localhost:3000
     }
   })
   
-  ```
+  ``` -->

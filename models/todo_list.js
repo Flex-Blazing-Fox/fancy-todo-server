@@ -1,4 +1,5 @@
 'use strict';
+const moment = require('moment');
 const {
   Model, Sequelize
 } = require('sequelize');
@@ -17,15 +18,15 @@ module.exports = (sequelize, DataTypes) => {
   todo_list.init({
     title:{
       type:DataTypes.STRING,
+      allowNull: false,
       validate:{
-        notNull: true,
         notEmpty: true
       }
     },
     description: {
       type:DataTypes.STRING,
+      allowNull: false,
       validate:{
-        notNull: true,
         notEmpty: true
       }
     },
@@ -34,15 +35,28 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.DATE,
       validate:{
         isPost(value){
-          const now = new Date()
+          let now = new Date()
+          now = moment(now).format("DD-MM-YYYY")
+          value = moment(value).format("DD-MM-YYYY")
           if (value < now) {
             throw new Error("Hanya boleh input tanggal sekarang dan setelahnya")
           }
         }
       }
     }, 
-    user_id: DataTypes.INTEGER
+    user_id:{
+      type:DataTypes.INTEGER,
+      allowNull: false,
+      validate:{
+        notEmpty: true
+      }
+    }, 
   }, {
+    hooks:{
+      beforeCreate: user =>{
+        user.due_date = moment(user.due_date).format("DD-MM-YYYY")
+      }
+    },
     sequelize,
     modelName: 'todo_list',
   });

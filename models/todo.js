@@ -67,6 +67,10 @@ module.exports = (sequelize, DataTypes) => {
             args: true,
             msg: 'status must not be null',
           },
+          isIn: {
+            args: [['not done', 'done']],
+            msg: 'status must be either not done or done',
+          },
         },
       },
       due_date: {

@@ -18,9 +18,7 @@ class TodosController {
   static getTodo(req, res) {
     const { id } = req.params
 
-    Todo.findOne({
-      where: { id: +id },
-    })
+    Todo.findByPk(+id)
       .then((todo) => {
         if (!todo) return res.status(404).json({ message: 'todo not found' })
         return res.status(200).json({ todo })
@@ -45,7 +43,7 @@ class TodosController {
       })
       .catch((err) => {
         if (err.name === 'SequelizeValidationError') {
-          return res.status(400).json({ err: err.name })
+          return res.status(400).json(err)
         }
         return res.status(500).json(err)
       })

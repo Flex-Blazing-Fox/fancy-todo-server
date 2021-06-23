@@ -58,6 +58,7 @@ module.exports = (sequelize, DataTypes) => {
       status: {
         allowNull: false,
         type: DataTypes.STRING,
+        defaultValue: 'not done',
         validate: {
           notEmpty: {
             args: true,
@@ -94,11 +95,6 @@ module.exports = (sequelize, DataTypes) => {
     },
     {
       sequelize,
-      hooks: {
-        beforeCreate: (todo, options) => {
-          todo.status = 'not done'
-        },
-      },
       modelName: 'Todo',
     }
   )

@@ -17,6 +17,10 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
         type: DataTypes.INTEGER,
         validate: {
+          notEmpty: {
+            args: true,
+            msg: 'user_id must not be empty',
+          },
           notNull: {
             args: true,
             msg: 'You must be signed to create or update todo',
@@ -24,30 +28,62 @@ module.exports = (sequelize, DataTypes) => {
         },
       },
       title: {
+        allowNull: false,
         type: DataTypes.STRING,
         validate: {
           notEmpty: {
             args: true,
             msg: 'title must not be empty',
           },
+          notNull: {
+            args: true,
+            msg: 'title must not be null',
+          },
         },
       },
       description: {
+        allowNull: false,
         type: DataTypes.STRING,
         validate: {
           notEmpty: {
             args: true,
             msg: 'description must not be empty',
           },
+          notNull: {
+            args: true,
+            msg: 'description must not be null',
+          },
         },
       },
-      status: DataTypes.STRING,
+      status: {
+        allowNull: false,
+        type: DataTypes.STRING,
+        validate: {
+          notEmpty: {
+            args: true,
+            msg: 'status must not be empty',
+          },
+          notNull: {
+            args: true,
+            msg: 'status must not be null',
+          },
+        },
+      },
       due_date: {
+        allowNull: false,
         type: DataTypes.DATE,
         validate: {
           isAfter: {
             args: new Date().toISOString(),
             msg: 'tanggal sudah lewat dari tanggal hari ini',
+          },
+          notEmpty: {
+            args: true,
+            msg: 'due_date must not be empty',
+          },
+          notNull: {
+            args: true,
+            msg: 'due_date must not be null',
           },
         },
       },

@@ -15,6 +15,8 @@ class UserController {
         })
       })
       .catch((err) => {
+        if (err.name === 'SequelizeUniqueConstraintError')
+          return res.status(400).json({ err: 'email is already exists' })
         return res.status(500).json(err)
       })
   }

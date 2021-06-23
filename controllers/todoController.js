@@ -4,7 +4,7 @@ class TodoController{
     static getAll(req, res) {
         Todo.findAll()
         .then(data => {
-            res.status(200).json({"code":200,"message":"Success",data})
+            res.status(200).json(data)
         })
         .catch(err => {
             res.status(500).json(err)
@@ -22,10 +22,14 @@ class TodoController{
             }
         )
         .then(data => {
-            res.status(201).json({"code":201,"message":"Success",data})
+            res.status(201).json(data)
         })
         .catch(err => {
-            res.status(500).json(err)
+            if(err.name = 'SequelizeValidationError'){
+                res.status(400).json({"message":err.errors[0].message})
+            }else {
+                res.status(500).json(err)
+            }
         })
     }
 
@@ -69,7 +73,11 @@ class TodoController{
             }
         })
         .catch(err => {
-            res.status(500).json(err)
+            if(err.name = 'SequelizeValidationError'){
+                res.status(400).json({"message":err.errors[0].message})
+            }else {
+                res.status(500).json(err)
+            }
         })
     }
 

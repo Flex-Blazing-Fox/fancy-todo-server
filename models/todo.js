@@ -18,7 +18,7 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       validate:{
         notEmpty: {
-          arg: true,
+          args: true,
           msg: "Title tidak boleh kosong"
         }
       }
@@ -27,22 +27,26 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
       validate: {
         notEmpty: {
-          arg: true,
+          args: true,
           msg: "Description tidak boleh kosong"
         }
       }
     },
     status: DataTypes.STRING,
-    due_date: { 
-      type:DataTypes.DATE,
-      validate: {
+    due_date: {
+      type: DataTypes.DATE,
+      validate:{
+        notEmpty: {
+          args: true,
+          msg: "Tanggal Tidak boleh kosong"
+        },
         isAfter: {
-          arg: new Date(),
-          msg: "Tanggal Tidak boleh kurang dari tanggal saat ini"
+          args: new Date().toString(),
+          msg: 'Tidak boleh tanggal kemarin',
         }
       }
     },
-  }, {
+  }, { 
     sequelize,
     hooks: {
       beforeCreate: (todo) => {

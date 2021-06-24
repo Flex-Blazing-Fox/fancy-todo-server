@@ -15,17 +15,47 @@ module.exports = (sequelize, DataTypes) => {
   }
   Todo.init(
     {
-      title: DataTypes.STRING,
-      description: DataTypes.STRING,
-      status: DataTypes.STRING,
+      title: {
+        type: DataTypes.STRING,
+        validate: {
+          isAppropriateLength(value) {
+            if (value.length > 500) {
+              throw new Error(
+                "Panjang judul tidak boleh lebih dari 100 karakter"
+              );
+            }
+          },
+        },
+      },
+      description: {
+        type: DataTypes.STRING,
+        validate: {
+          isAppropriateLength(value) {
+            if (value.length > 500) {
+              throw new Error(
+                "Panjang deskripsi tidak boleh lebih dari 500 karakter"
+              );
+            }
+          },
+        },
+      },
+      status: {
+        type: DataTypes.STRING,
+        validate: {
+          isIn: [["to plan", "to code", "to execute", "done"]],
+        },
+      },
       due_date: {
         type: DataTypes.DATE,
         validate: {
+          notEmpty: true,
           isValidDate(value) {
             if (moment(value, "YYYY-MM-DD hh:mm:ss") < moment()) {
               throw new Error(
                 "Due date tidak boleh kurang dari waktu saat ini"
               );
+            } else if (!moment(value, moment.ISO_8601, true).isValid()) {
+              throw new Error("Masukkan input berupa format tanggal dan waktu");
             }
           },
         },

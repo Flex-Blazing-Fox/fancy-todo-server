@@ -100,6 +100,7 @@ class todoController {
         });
     }
   }
+
   static deleteTodo(req, res) {
     let { id } = req.params;
     Todo.destroy({
@@ -110,7 +111,9 @@ class todoController {
     })
       .then((result) => {
         if (result != 0) {
-          res.status(200).json({message: `Record with id ${id} successfully deleted`});
+          res
+            .status(200)
+            .json({ message: `Record with id ${id} successfully deleted` });
         } else if (result == 0) {
           res.status(404).json({ message: `Record with id ${id} not found` });
         }

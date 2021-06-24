@@ -19,8 +19,8 @@ class TodoController{
             res.status(201).json(result)
         })
         .catch(err => {
-            if(err.errors[0].message=="Validation isAfter on due_date failed"){
-                res.status(400).json({"message": "DueDate Cannot Previus Date"})
+            if(err.name === "SequelizeValidationError"){
+                res.status(400).json({"message": err.errors[0].message})
             }else{
                 res.status(500).json(err)
             }
@@ -62,8 +62,8 @@ class TodoController{
             }
         })
         .catch(err => {
-            if(err.errors[0].message=="Validation isAfter on due_date failed"){
-                res.status(400).json({"message": "DueDate Cannot Previus Date"})
+            if(err.name === "SequelizeValidationError"){
+                res.status(400).json({"message": err.errors[0].message})
             }else{
                 res.status(500).json(err)
             }
@@ -86,7 +86,11 @@ class TodoController{
             }
         })
         .catch(err => {
-            res.status(500).json(err)
+            if(err.name === "SequelizeValidationError"){
+                res.status(400).json({"message": err.errors[0].message})
+            }else{
+                res.status(500).json(err)
+            }
         })
     }
 

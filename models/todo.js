@@ -19,12 +19,52 @@ module.exports = (sequelize, DataTypes) => {
     }
   };
   Todo.init({
-    title: DataTypes.STRING,
+    title: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      validate: {
+        notEmpty: {
+          args: true,
+          msg: 'Title cannot be empty'
+        },
+        notNull: {
+          args: true,
+          msg: 'Title cannot be null'
+        }
+      }
+    },
     desc: DataTypes.STRING,
-    status: DataTypes.STRING,
+    status: {
+      type: DataTypes.STRING,
+      allowNull: false,
+      validate: {
+        notEmpty: {
+          args: true,
+          msg: 'Status cannot be empty'
+        },
+        notNull: {
+          args: true,
+          msg: 'Status cannot be null'
+        }
+      }
+    },
     due_date: {
       type: DataTypes.DATE,
-      validate: {isAfter: yesterday}
+      allowNull: false,
+      validate: {
+        isAfter: {
+          args: yesterday,
+          msg: 'DueDate cannot previus date'
+        },
+        notEmpty: {
+          args: true,
+          msg: 'DueDate cannot be empty'
+        },
+        notNull: {
+          args: true,
+          msg: 'DueDate cannot be null'
+        }
+      }
     }
   }, {
     sequelize,

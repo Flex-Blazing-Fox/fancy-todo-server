@@ -10,7 +10,7 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      // define association here
+      this.belongsTo(models.User, { foreignKey: 'userId'})
     }
   };
   Todo.init({
@@ -20,6 +20,10 @@ module.exports = (sequelize, DataTypes) => {
         notEmpty: {
           args: true,
           msg: "Title tidak boleh kosong"
+        },
+        notNull:{
+          args: true,
+          msg: "Title tidak boleh null"
         }
       }
     },
@@ -46,6 +50,19 @@ module.exports = (sequelize, DataTypes) => {
         }
       }
     },
+    userId: {
+      type: DataTypes.INTEGER,
+      validate: {
+        notEmpty: {
+          args: true,
+          msg: 'User Tidak Ditemukan'
+        },
+        notNull: {
+          args: true,
+          msg: 'User Tidak Ditemukan'
+        }
+      }
+    }
   }, { 
     sequelize,
     hooks: {

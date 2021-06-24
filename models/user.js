@@ -2,6 +2,9 @@
 const {
   Model
 } = require('sequelize');
+
+const bcrypt = require('bcrypt')
+
 module.exports = (sequelize, DataTypes) => {
   class User extends Model {
     /**
@@ -14,13 +17,10 @@ module.exports = (sequelize, DataTypes) => {
     }
   };
   User.init({
-    Password: { 
+    email: { 
+      allowNull:false,
       type:DataTypes.STRING,
       validate: {
-        unique: {
-          args : true,
-          msg: 'Email Sudah Terdaftar'
-        },
         notEmpty:{
           args: true,
           msg: 'Email Tidak Boleh Kosong'
@@ -32,22 +32,33 @@ module.exports = (sequelize, DataTypes) => {
       }
     },
     password: {
+      allowNull:false,
       type:DataTypes.STRING,
-      notEmpty:{
-        args: true,
-        msg: 'Password Tidak Boleh Kosong'
-      },
-      notNull: {
-        args: true,
-        msg: 'Password Tidak boleh null'
-      },
-      min : {
-        args: 6,
-        msg: 'Password minimal 6 karkter'
+      validate: {
+        notEmpty:{
+          args: true,
+          msg: 'Password Tidak Boleh Kosong'
+        },
+        notNull: {
+          args: true,
+          msg: 'Password Tidak boleh null'
+        },
+        min : {
+          args: 6,
+          msg: 'Password minimal 6 karkter'
+        }
       }
     }
   }, {
     sequelize,
+    hooks: {
+      beforeCreate: (todos) => {
+        const salt = bcrypt.genSaltSync(10)
+        const hash = bcrypt.hashSync(todos.password, salt)
+        
+        todos.password = hash
+      }
+    },
     modelName: 'User',
   });
   return User;

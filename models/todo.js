@@ -15,6 +15,7 @@ module.exports = (sequelize, DataTypes) => {
   };
   Todo.init({
     title: {
+      allowNull:false,
       type: DataTypes.STRING,
       validate:{
         notEmpty: {
@@ -23,7 +24,7 @@ module.exports = (sequelize, DataTypes) => {
         },
         notNull:{
           args: true,
-          msg: "Title tidak boleh null"
+          msg: "Title tidak boleh kosong"
         }
       }
     },
@@ -51,6 +52,7 @@ module.exports = (sequelize, DataTypes) => {
       }
     },
     userId: {
+      allowNull:false,
       type: DataTypes.INTEGER,
       validate: {
         notEmpty: {

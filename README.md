@@ -1,6 +1,6 @@
 # fancy-todo-server
 
-# fancy-todo-server
+
 
 ***Getting Started for Server Side***
 
@@ -12,14 +12,28 @@
 
 * `POST /todos`
 * `GET /todos`
-* `GET /todos/:id`
+* `PUT /todos/:id`
+* `PATCH /todos/:id`
+* `DELETE /todos/:id`
 
 ### Add Todo
 > Menambahkan todo baru
 
 * _URL_
 
-```
-/todos
-```
+  ```
+  /todos
+  ```
+
+* _Method_
+
+  ```
+  POST
+  ```
+
+* _URL Params_
+
+  ```
+  None
+  ```
 

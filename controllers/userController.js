@@ -25,7 +25,7 @@ class userController {
             id: user.dataValues.id,
           };
           const accessToken = jwt.sign(payload, "ABCD");
-          res.status(200).json(accessToken);
+          res.status(200).json({ access_token: accessToken });
         } else {
           res.status(401).json({ message: "email atau password salah" });
         }

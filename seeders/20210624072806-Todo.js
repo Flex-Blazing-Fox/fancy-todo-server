@@ -1,7 +1,7 @@
 'use strict';
 const fs = require('fs')
-let user = JSON.parse(fs.readFileSync('./databases/users.json', {encoding: "utf-8"}))
-user = user.map(el=>{
+let todo = JSON.parse(fs.readFileSync('./databases/todos.json', {encoding: "utf-8"}))
+todo = todo.map(el=>{
   return{
     ...el ,
     createdAt: new Date(),
@@ -11,7 +11,7 @@ user = user.map(el=>{
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.bulkInsert('Users', user)
+    await queryInterface.bulkInsert('Todos', todo)
     /**
      * Add seed commands here.
      *
@@ -24,7 +24,7 @@ module.exports = {
   },
 
   down: async (queryInterface, Sequelize) => {
-    await queryInterface.bulkDelete('Users')
+    await queryInterface.bulkDelete('Todos')
     /**
      * Add commands to revert seed here.
      *

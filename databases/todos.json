@@ -3,6 +3,7 @@
       "title": "Test",
       "desc": "Test Todo App",
       "status": "On Progress",
-      "due_date": "2021-06-30"
+      "due_date": "2021-06-30",
+      "user_id": 1
     }
 ]

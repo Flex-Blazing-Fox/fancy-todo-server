@@ -3,7 +3,7 @@ const { generateToken } = require('../helpers/jsonwebtoken')
 const bcrypt = require('bcrypt')
 
 class UserController {
-  static async register(req, res) {
+  static async register(req, res, next) {
     const { email, password } = req.body
 
     try {
@@ -16,13 +16,14 @@ class UserController {
         },
       })
     } catch (err) {
-      if (err.name === 'SequelizeUniqueConstraintError')
-        return res.status(400).json({ err: 'email is already exists' })
-      return res.status(500).json(err)
+      if (err.name === 'SequelizeUniqueConstraintError') {
+        return next({ name: 'UniqueEmailError' })
+      }
+      return next(err)
     }
   }
 
-  static async login(req, res) {
+  static async login(req, res, next) {
     const { email, password } = req.body
 
     try {
@@ -31,17 +32,13 @@ class UserController {
       })
 
       if (!user) {
-        return res
-          .status(400)
-          .json({ message: 'email or password is incorrect' })
+        return next({ name: 'IncorrectCredentialsError' })
       }
 
       const isPasswordCorrect = bcrypt.compareSync(password, user.password)
 
       if (!isPasswordCorrect) {
-        return res
-          .status(400)
-          .json({ message: 'email or password is incorrect' })
+        return next({ name: 'IncorrectCredentialsError' })
       }
 
       const payload = {
@@ -53,7 +50,7 @@ class UserController {
 
       return res.status(200).json({ token })
     } catch (err) {
-      res.status(500).json(err)
+      return next(err)
     }
   }
 }

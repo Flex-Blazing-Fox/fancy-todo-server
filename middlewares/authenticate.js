@@ -3,20 +3,23 @@ const { decode } = require('../helpers/jsonwebtoken')
 
 const authenticate = async (req, res, next) => {
   try {
-    const token = req.get('token')
+    if (!req.headers.token) {
+      return next({ name: 'MissingAccessTokenError' })
+    }
+    const token = req.headers.token
     const userDecoded = decode(token)
 
     const user = await User.findByPk(userDecoded.id)
 
     if (!user) {
-      return res.status(401).json({ message: 'Authentication Error' })
+      return next({ name: 'AuthenticationError' })
     }
 
     req.user = user
 
     next()
   } catch (err) {
-    res.status(500).json(err)
+    return next({ name: 'AuthenticationError' })
   }
 }
 

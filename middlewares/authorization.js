@@ -6,21 +6,19 @@ const authorization = async (req, res, next) => {
 
   try {
     const todoById = await Todo.findByPk(id)
-  
+
     if (!todoById) {
-      return res.status(404).json({ message: 'todo not found' })
+      return next({ name: 'NotFoundError' })
     }
-  
+
     if (user_id !== todoById.user_id) {
-      return res.status(403).json({ message: 'FORBIDDEN' })
+      return next({ name: 'ForbiddenError' })
     }
 
     next()
   } catch (err) {
-    res.status(500).json(err)
+    next(err)
   }
-
-
 }
 
 module.exports = authorization

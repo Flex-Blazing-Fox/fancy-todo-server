@@ -1,33 +1,33 @@
 const { Todo } = require('../models')
 
 class TodosController {
-  static async getTodos(req, res) {
+  static async getTodos(req, res, next) {
     const { id } = req.user
-    
+
     try {
       const todos = await Todo.findAll({ where: { user_id: +id } })
 
       return res.status(200).json(todos)
     } catch (err) {
-      return res.status(500).json(err)
+      next(err)
     }
   }
 
-  static async getTodo(req, res) {
+  static async getTodo(req, res, next) {
     const { id } = req.params
 
     try {
       const todo = await Todo.findByPk(+id)
 
-      if (!todo) return res.status(404).json({ message: 'todo not found' })
+      if (!todo) return next({ name: 'NotFoundError' })
 
-      return res.status(200).json({ todo })
+      return res.status(200).json(todo)
     } catch (err) {
-      return res.status(500).json(err)
+      next(err)
     }
   }
 
-  static async postTodo(req, res) {
+  static async postTodo(req, res, next) {
     const { title, description, due_date } = req.body
     const { id } = req.user
 
@@ -42,14 +42,14 @@ class TodosController {
       return res.status(201).json(todo)
     } catch (err) {
       if (err.name === 'SequelizeValidationError') {
-        return res.status(400).json(err)
+        return next({ name: 'SequelizeValidationError' })
       }
 
-      return res.status(500).json(err)
+      next(err)
     }
   }
 
-  static async putTodo(req, res) {
+  static async putTodo(req, res, next) {
     const { id } = req.params
     const { title, description, status, due_date } = req.body
 
@@ -70,20 +70,20 @@ class TodosController {
       if (todo[0] === 1) {
         const updatedTodo = todo[1][0]
 
-        return res.status(200).json({ todo: updatedTodo })
+        return res.status(200).json(updatedTodo)
       }
 
-      return res.status(404).json({ message: 'todo not found' })
+      return next({ name: 'NotFoundError' })
     } catch (err) {
       if (err.name === 'SequelizeValidationError') {
-        return res.status(400).json(err)
+        return next({ name: 'SequelizeValidationError' })
       }
 
-      return res.status(500).json(err)
+      next(err)
     }
   }
 
-  static async patchTodo(req, res) {
+  static async patchTodo(req, res, next) {
     const { id } = req.params
     const { status } = req.body
 
@@ -98,32 +98,32 @@ class TodosController {
 
       if (todo[0] === 1) {
         const updatedTodo = todo[1][0]
-        return res.status(200).json({ todo: updatedTodo })
+        return res.status(200).json(updatedTodo)
       }
 
-      return res.status(404).json({ message: 'todo not found' })
+      return next({ name: 'NotFoundError' })
     } catch (err) {
       if (err.name === 'SequelizeValidationError') {
-        return res.status(400).json(err)
+        return next({ name: 'SequelizeValidationError' })
       }
 
-      return res.status(500).json(err)
+      next(err)
     }
   }
 
-  static async deleteTodo(req, res) {
+  static async deleteTodo(req, res, next) {
     const { id } = req.params
 
     try {
       const row = await Todo.destroy({ where: { id: +id } })
 
       if (row === 0) {
-        return res.status(404).json({ message: 'todo not found' })
+        return next({ name: 'NotFoundError' })
       }
 
       return res.status(200).json({ message: 'todo success to delete' })
     } catch (err) {
-      return res.status(500).json(err)
+      next(err)
     }
   }
 }

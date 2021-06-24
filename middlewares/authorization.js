@@ -2,7 +2,7 @@ const { Todo } = require('../models')
 
 const authorization = async (req, res, next) => {
   const { id } = req.params
-  const user_id = res.locals.user.id
+  const user_id = req.user.id
 
   try {
     const todoById = await Todo.findByPk(id)

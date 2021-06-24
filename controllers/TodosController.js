@@ -2,7 +2,7 @@ const { Todo } = require('../models')
 
 class TodosController {
   static async getTodos(req, res) {
-    const { id } = res.locals.user
+    const { id } = req.user
     
     try {
       const todos = await Todo.findAll({ where: { user_id: +id } })
@@ -29,7 +29,7 @@ class TodosController {
 
   static async postTodo(req, res) {
     const { title, description, due_date } = req.body
-    const { id } = res.locals.user
+    const { id } = req.user
 
     try {
       const todo = await Todo.create({

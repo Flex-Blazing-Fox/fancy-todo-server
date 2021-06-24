@@ -12,7 +12,7 @@ const authenticate = async (req, res, next) => {
       return res.status(401).json({ message: 'Authentication Error' })
     }
 
-    res.locals.user = user
+    req.user = user
 
     next()
   } catch (err) {

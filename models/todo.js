@@ -50,12 +50,12 @@ module.exports = (sequelize, DataTypes) => {
         validate: {
           notEmpty: true,
           isValidDate(value) {
-            if (moment(value, "YYYY-MM-DD hh:mm:ss") < moment()) {
+            if (!moment(value, moment.ISO_8601, true).isValid()) {
+              throw new Error("Masukkan input berupa format tanggal dan waktu");
+            } else if (moment(value, "YYYY-MM-DD hh:mm:ss") < moment()) {
               throw new Error(
                 "Due date tidak boleh kurang dari waktu saat ini"
               );
-            } else if (!moment(value, moment.ISO_8601, true).isValid()) {
-              throw new Error("Masukkan input berupa format tanggal dan waktu");
             }
           },
         },

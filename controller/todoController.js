@@ -3,9 +3,16 @@ const { Todo, User } = require('../models')
 
 class TodoController{
     static readAll(req, res) {
-        Todo.findAll()
+        Todo.findAll({where:{
+            user_id: req.user_id
+        }})
         .then(result => {
-            res.status(200).json(result)
+            if(result.length>0){
+                res.status(200).json(result)
+            }
+            else{
+                res.status(404).json({message: "Todo Not Found"})
+            }
         })
         .catch(err => {
             res.status(500).json(err)
@@ -13,14 +20,14 @@ class TodoController{
     }
 
     static addTodo(req, res) {
-        let { title, desc, status, due_date } = req.body
-        Todo.create({ title, desc, status, due_date })
+        const { title, desc, status, due_date } = req.body
+        Todo.create({ title, desc, status, due_date,  user_id: req.user_id})
         .then(result => {
             res.status(201).json(result)
         })
         .catch(err => {
             if(err.name === "SequelizeValidationError"){
-                res.status(400).json({"Error": err.errors[0].message})
+                res.status(400).json({message: err.errors[0].message})
             }else{
                 res.status(500).json(err)
             }
@@ -28,42 +35,24 @@ class TodoController{
     }
 
     static readDetail(req, res) {
-        const { id } = req.params
-        Todo.findOne({
-            where: {id: +id}
-        })
-        .then(result => {
-            if(result){
-                res.status(200).json(result)
-            }
-            else{
-                res.status(404).json({"Error":"Todo Not Found"})
-            }
-        })
-        .catch(err => {
-            res.status(500).json(err)
-        })
+        const todo = req.todo
+        res.status(200).json({todo})
     }
 
     static updateAll(req, res) {
-        const { id } = req.params
-        let { title, desc, status, due_date } = req.body
+        const todo = req.todo
+        const { title, desc, status, due_date } = req.body
         Todo.update({ title, desc, status, due_date },
             {
-                where: {id: +id},
+                where: {id:todo.id},
                 returning: true
             })
         .then(result => {
-            if(result[0]!==0){
-                res.status(200).json(result[1])
-            }
-            else{
-                res.status(404).json({"Error":"Todo Not Found"})
-            }
+            res.status(200).json(result[1])
         })
         .catch(err => {
             if(err.name === "SequelizeValidationError"){
-                res.status(400).json({"Error": err.errors[0].message})
+                res.status(400).json({message: err.errors[0].message})
             }else{
                 res.status(500).json(err)
             }
@@ -71,23 +60,18 @@ class TodoController{
     }
     
     static updateStatus(req, res) {
-        const { id } = req.params
+        const todo = req.todo
         const { status } = req.body
         Todo.update({status}, {
-            where: {id: +id},
+            where: {id: todo.id},
             returning: true
         })
         .then(result => {
-            if(result[0]!==0){
-                res.status(200).json(result[1])
-            }
-            else{
-                res.status(404).json({"Error":"Todo Not Found"})
-            }
+            res.status(200).json(result[1])
         })
         .catch(err => {
             if(err.name === "SequelizeValidationError"){
-                res.status(400).json({"Error": err.errors[0].message})
+                res.status(400).json({message: err.errors[0].message})
             }else{
                 res.status(500).json(err)
             }
@@ -95,17 +79,12 @@ class TodoController{
     }
 
     static delete(req, res) {
-        const { id } = req.params
+        const todo = req.todo
         Todo.destroy({
-            where:{id: +id}
+            where:{id: todo.id}
         })
-        .then(result => {
-            if(result!==0){
-                res.status(200).json({"Error":"Success deleted todo"})
-            }
-            else{
-                res.status(404).json({"Error":"Todo Not Found"})
-            }
+        .then(() => {
+            res.status(200).json({message: "Success deleted todo"})
         })
         .catch(err => {
             res.status(500).json(err)

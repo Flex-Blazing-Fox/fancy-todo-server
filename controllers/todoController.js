@@ -3,7 +3,11 @@ class todo{
     static listTodo(req,res){
         todo_list.findAll()
         .then(result=>{
-            res.status(200).json(result)
+            if (result.length === 0) {
+                res.status(204).json({"message":"Todo tidak ditemukan"})
+            }else{
+                res.status(200).json(result)
+            }
         })
         .catch(err =>{
             res.status(500)
@@ -13,10 +17,14 @@ class todo{
         const {id} = req.params
         todo_list.findByPk(+id)
         .then(result =>{
-            res.status(200).json(result)
+            if (result.length === 0) {
+                res.status(204).json({"message":"Todo tidak ditemukan"})
+            }else{
+                res.status(200).json(result)
+            }
         })
         .catch(err =>{
-            res.status(500)
+            res.status(500).json(err)
         })
     }
     static putTodo(req,res){
@@ -60,6 +68,17 @@ class todo{
         .catch(err => {
            res.status(500).json(err)
           })
+    }
+
+    static patchTodo(req,res){
+        const {id} = req.params
+        const {status} = req.body
+        todo_list.update({status},{
+            where:{
+                id:+id
+            },
+            returning:true
+        })
     }
 
 }

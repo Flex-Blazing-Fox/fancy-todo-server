@@ -6,5 +6,6 @@ router.get('/:id',todo.listTodo_Id)
 router.post('/',todo.addTodo)
 router.get('/:id',todo.deleteTodo)
 router.put('/:id',todo.putTodo)
+router.patch('/:id',todo.patchTodo)
 
 module.exports = router

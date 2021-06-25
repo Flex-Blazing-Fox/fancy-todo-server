@@ -18,16 +18,16 @@ module.exports = (sequelize, DataTypes) => {
   todo_list.init({
     title:{
       type:DataTypes.STRING,
-      allowNull: false,
+      allowNull:{args:false,msg:"Title must be filled"},
       validate:{
-        notEmpty: true
+        notEmpty:{args:true,msg:"Title must be filled"},
       }
     },
     description: {
       type:DataTypes.STRING,
-      allowNull: false,
+      allowNull:{args:false,msg:"Description must be filled"},
       validate:{
-        notEmpty: true
+        notEmpty:{args:true,msg:"Description must be filled"},
       }
     },
     status: DataTypes.BOOLEAN,

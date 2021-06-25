@@ -3,16 +3,16 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
 class userController {
-  static register(req, res) {
+  static register(req, res, next) {
     const { email, password } = req.body;
     User.create({
       email,
       password,
     })
       .then((result) => res.status(201).json(result))
-      .catch((err) => res.status(500).json(err));
+      .catch(() => next({ name: "INTERNAL SERVER ERROR " }));
   }
-  static login(req, res) {
+  static login(req, res, next) {
     const { email, password } = req.body;
     User.findOne({
       where: {
@@ -27,10 +27,10 @@ class userController {
           const accessToken = jwt.sign(payload, "ABCD");
           res.status(200).json({ access_token: accessToken });
         } else {
-          res.status(401).json({ message: "email atau password salah" });
+          throw { name: "EMAIL / PASSWORD AUTHENTICATION FAIL" };
         }
       })
-      .catch((err) => res.status(500).json(err));
+      .catch((err) => next(err));
   }
 }
 

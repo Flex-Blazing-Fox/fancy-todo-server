@@ -10,7 +10,7 @@ const authorize = (req, res, next) => {
       req.authorizedTodos = results;
       next();
     })
-    .catch((err) => res.status(500).json(err));
+    .catch((err) => next(err));
 };
 
 module.exports = authorize;

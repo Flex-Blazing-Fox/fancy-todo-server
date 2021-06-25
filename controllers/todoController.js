@@ -1,34 +1,33 @@
 const { Todo } = require("../models");
+const getAuthorizedTodo = require("../helpers/getAuthorizedTodo");
+const getValidationErrorDetails = require("../helpers/getValidationErrorDetails");
 
 class todoController {
-  static getAllTodos(req, res) {
+  static getAllTodos(req, res, next) {
     try {
       if (req.authorizedTodos.length > 0) {
         res.status(200).json(req.authorizedTodos);
       } else {
-        res.status(200).json({ message: "belum ada todo list yang dibuat" });
+        res.status(200).json({ message: "no todo list created" });
       }
     } catch {
-      res.status(500).json({ message: "terjadi error" });
+      next({ name: "INTERNAL SERVER ERROR" });
     }
   }
-  static getTodo(req, res) {
+  static getTodo(req, res, next) {
     try {
       const { id } = req.params;
-      let authorizedTodos = req.authorizedTodos.map((todo) => todo.dataValues),
-        todo = authorizedTodos.find((todo) => todo.id === +id);
+      let todo = getAuthorizedTodo(req, id);
       if (todo) {
         res.status(200).json(todo);
       } else {
-        res.status(404).json({
-          message: `tidak ditemukan todo dengan id ${id} atau todo tersebut tidak terautorisasi`,
-        });
+        next({ name: "TODO NOT FOUND / AUTHORIZED", id: id });
       }
     } catch {
-      res.status(500).json({ message: "terjadi error" });
+      next({ name: "INTERNAL SERVER ERROR" });
     }
   }
-  static createTodo(req, res) {
+  static createTodo(req, res, next) {
     let { title, description, status, due_date } = req.body;
     Todo.create(
       {
@@ -46,16 +45,18 @@ class todoController {
       .then((result) => res.status(201).json(result))
       .catch((err) => {
         if (err.name === "SequelizeValidationError") {
-          res.status(400).json(err);
+          next({
+            name: "SEQUELIZE VALIDATION ERROR",
+            details: getValidationErrorDetails(err),
+          });
         } else {
-          res.status(500).json(err);
+          next({ name: "INTERNAL SERVER ERROR" });
         }
       });
   }
-  static updateTodoValue(req, res) {
+  static updateTodoValue(req, res, next) {
     const { id } = req.params;
-    let authorizedTodos = req.authorizedTodos.map((todo) => todo.dataValues),
-      todo = authorizedTodos.find((todo) => todo.id === +id);
+    let todo = getAuthorizedTodo(req, id);
     if (todo) {
       Todo.update(req.body, {
         where: {
@@ -66,27 +67,25 @@ class todoController {
         .then((result) => res.status(200).json(result[1]))
         .catch((err) => {
           if (err.name === "SequelizeValidationError") {
-            res.status(400).json(err);
+            next({
+              name: "SEQUELIZE VALIDATION ERROR",
+              details: getValidationErrorDetails(err),
+            });
           } else {
-            res.status(500).json(err);
+            next({ name: "INTERNAL SERVER ERROR" });
           }
         });
     } else {
-      res.status(404).json({
-        message: `tidak ditemukan todo dengan id ${id} atau todo tersebut tidak terautorisasi untuk diubah`,
-      });
+      next({ name: "TODO NOT FOUND / AUTHORIZED", id: id });
     }
   }
-  static updateTodoRecord(req, res) {
+  static updateTodoRecord(req, res, next) {
     let { id } = req.params;
     const keys = ["title", "description", "status", "due_date"];
     let hasAllKeys = keys.every((item) => req.body.hasOwnProperty(item));
-    let authorizedTodos = req.authorizedTodos.map((todo) => todo.dataValues),
-      todo = authorizedTodos.find((todo) => todo.id === +id);
+    let todo = getAuthorizedTodo(req, id);
     if (!hasAllKeys) {
-      res.status(400).json({
-        message: `All data (title, description, status, and due date) must be provided. Use patch instead.`,
-      });
+      next({ name: "UPDATE METHOD NEED ALL DATA" });
     } else if (todo) {
       let { title, description, status, due_date } = req.body;
 
@@ -102,22 +101,22 @@ class todoController {
         .then((result) => res.status(200).json(result[1]))
         .catch((err) => {
           if (err.name === "SequelizeValidationError") {
-            res.status(400).json(err);
+            next({
+              name: "SEQUELIZE VALIDATION ERROR",
+              details: this.getValidationErrorDetails(err),
+            });
           } else {
-            res.status(500).json(err);
+            next(err);
           }
         });
     } else {
-      res.status(404).json({
-        message: `tidak ditemukan todo dengan id ${id} atau todo tersebut tidak terautorisasi untuk diubah`,
-      });
+      next({ name: "TODO NOT FOUND / AUTHORIZED", id: id });
     }
   }
 
-  static deleteTodo(req, res) {
+  static deleteTodo(req, res, next) {
     let { id } = req.params;
-    let authorizedTodos = req.authorizedTodos.map((todo) => todo.dataValues),
-      todo = authorizedTodos.find((todo) => todo.id === +id);
+    let todo = getAuthorizedTodo(req, id);
     if (todo) {
       Todo.destroy({
         where: {
@@ -131,12 +130,10 @@ class todoController {
             .json({ message: `Record with id ${id} successfully deleted` })
         )
         .catch((err) => {
-          res.status(500).json(err);
+          next(err);
         });
     } else {
-      res.status(404).json({
-        message: `tidak ditemukan todo dengan id ${id} atau todo tersebut tidak terautorisasi untuk dihapus`,
-      });
+      next({ name: "TODO NOT FOUND / AUTHORIZED", id: id });
     }
   }
 }

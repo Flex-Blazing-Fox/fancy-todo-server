@@ -1,6 +1,7 @@
 const { User } = require("../models");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const getValidationErrorDetails = require("../helpers/getValidationErrorDetails");
 
 class userController {
   static register(req, res, next) {
@@ -10,7 +11,16 @@ class userController {
       password,
     })
       .then((result) => res.status(201).json(result))
-      .catch(() => next({ name: "INTERNAL SERVER ERROR " }));
+      .catch((err) => {
+        if (err.name === "SequelizeValidationError") {
+          next({
+            name: "SEQUELIZE VALIDATION ERROR",
+            details: getValidationErrorDetails(err),
+          });
+        } else {
+          next({ name: "INTERNAL SERVER ERROR" });
+        }
+      });
   }
   static login(req, res, next) {
     const { email, password } = req.body;

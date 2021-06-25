@@ -23,6 +23,17 @@ module.exports = (sequelize, DataTypes) => {
         validate: {
           notEmpty: true,
           isEmail: true,
+          isUnique: (value, next) => {
+            User.findAll({
+              where: { email: value },
+              attributes: ["id"],
+            })
+              .then((user) => {
+                if (user.length != 0) next("Email is not unique");
+                next();
+              })
+              .catch(() => next({ name: "INTERNAL SERVER ERROR" }));
+          },
         },
       },
       password: {

@@ -32,7 +32,7 @@ class UserController{
                 const payload = {
                     user_id: result.id
                 }
-                const access_token = jwt.sign(payload, 'ROMANOVA')
+                const access_token = jwt.sign(payload, process.env.JWT_SECRET)
                 res.status(200).json({message: 'Login Success', access_token})
             }else{
                 throw{code: 401, message: 'Invalid email/password'}

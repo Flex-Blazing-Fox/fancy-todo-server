@@ -6,7 +6,7 @@ const authentication = (req, res, next)=>{
         return res.status(401).json({messsage: 'Please SignIn First'})
     }
     try{
-        const decoded = jwt.verify(req.headers.access_token, 'ROMANOVA')
+        const decoded = jwt.verify(req.headers.access_token, process.env.JWT_SECRET)
         req.user_id = decoded.user_id
         next()
     }

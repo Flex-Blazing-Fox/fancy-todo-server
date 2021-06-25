@@ -1,5 +1,6 @@
 const errorHandlers = (err, req, res, next) => {
-  let statusCode, message
+  let statusCode
+  let message = []
 
   switch (err.name) {
     case 'UniqueEmailError':
@@ -12,7 +13,7 @@ const errorHandlers = (err, req, res, next) => {
       break
     case 'SequelizeValidationError':
       statusCode = 400
-      message = 'Sequelize validation error'
+      message = err.message.split('\n')
       break
     case 'AuthenticationError':
       statusCode = 401
@@ -36,7 +37,7 @@ const errorHandlers = (err, req, res, next) => {
       break
   }
 
-  res.status(statusCode).json({ message })
+  res.status(statusCode).json({ err: message })
 }
 
 module.exports = errorHandlers

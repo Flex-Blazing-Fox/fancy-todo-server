@@ -41,10 +41,6 @@ class TodosController {
 
       return res.status(201).json(todo)
     } catch (err) {
-      if (err.name === 'SequelizeValidationError') {
-        return next({ name: 'SequelizeValidationError' })
-      }
-
       next(err)
     }
   }

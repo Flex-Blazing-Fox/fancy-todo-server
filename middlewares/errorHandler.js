@@ -2,10 +2,6 @@ const errorHandler = (err, req, res, next) => {
   let statusCode,
     error = [];
   switch (err.name) {
-    case "REGISTRATION FAIL":
-      console.log("test");
-      statusCode = 400;
-      error.push("Please try another email or another password");
     case "EMAIL / PASSWORD AUTHENTICATION FAIL":
       statusCode = 401;
       error.push("Email or password combination can't be found");

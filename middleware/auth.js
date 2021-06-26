@@ -3,15 +3,28 @@ const jwt = require('jsonwebtoken')
 
 const authentication = (req, res, next)=>{
     if(!req.headers.access_token){
-        return res.status(401).json({messsage: 'Please SignIn First'})
+        throw {name: 'NOT_LOGIN'}
     }
     try{
         const decoded = jwt.verify(req.headers.access_token, process.env.JWT_SECRET)
         req.user_id = decoded.user_id
-        next()
+        
+        User.findOne({where:{
+            id: decoded.user_id
+        }})
+        .then(result=>{
+            if(result){
+                next() 
+            }else{
+                throw{name: 'USER_NOT_FOUND'}
+            }
+        })
+        .catch(err=>{
+            next(err)
+        })
     }
     catch(err){
-        res.status(401).json({messsage: 'Invalid Access Token'})
+        next({name: 'INVALID_TOKEN'})
     }
 }
 const authorization = (req, res, next)=>{
@@ -24,14 +37,14 @@ const authorization = (req, res, next)=>{
     })
     .then(result=>{
         if(!result){
-            res.status(404).json({message: "Todo Not Found"})
+            throw {name: 'TODO_NOT_FOUND'}
         }else{
             req.todo = result
             next()
         }
     })
     .catch(err=>{
-        res.status(500).json(err)
+        next(err)
     })
 }
 

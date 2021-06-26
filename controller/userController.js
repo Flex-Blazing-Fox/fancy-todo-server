@@ -3,7 +3,7 @@ const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 
 class UserController{
-    static signUp(req, res){
+    static signUp(req, res, next){
         const {email, password} = req.body
         
         User.create({email, password})
@@ -11,17 +11,11 @@ class UserController{
             res.status(201).json(result)
         })
         .catch(err=>{
-            if(err.name === 'SequelizeValidationError'){
-                res.status(400).json({message: err.errors[0].message})
-            }else if(err.name === 'SequelizeUniqueConstraintError'){
-                res.status(400).json({message: 'Email already registered'})
-            }else{
-                res.status(500).json(err)
-            }
+            next(err)
         })
     }
 
-    static signIn(req, res){
+    static signIn(req, res, next){
         const {email, password} = req.body
         User.findOne({
             where: {email}
@@ -35,11 +29,11 @@ class UserController{
                 const access_token = jwt.sign(payload, process.env.JWT_SECRET)
                 res.status(200).json({message: 'Login Success', access_token})
             }else{
-                throw{code: 401, message: 'Invalid email/password'}
+                throw{name: 'LOGIN_FAILED'}
             }
         })
         .catch(err=>{
-            res.status(500).json(err)
+            next({name: 'LOGIN_FAILED'})
         })
     }
 }

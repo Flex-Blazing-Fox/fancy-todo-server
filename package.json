@@ -6,7 +6,8 @@
   "scripts": {
     "test": "mocha --timeout 10000",
     "dev": "set NODE_ENV=dev && node_modules/nodemon/bin/nodemon.js index.js",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "start": "node index.js"
   },
   "repository": {
     "type": "git",

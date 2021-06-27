@@ -20,9 +20,11 @@ module.exports = (sequelize, DataTypes) => {
     {
       title: {
         type: DataTypes.STRING,
+        allowNull: false, 
         validate: {
+          notNull: true, 
           isAppropriateLength(value) {
-            if (value.length > 500) {
+            if (value.length > 100) {
               throw new Error(
                 "Panjang judul tidak boleh lebih dari 100 karakter"
               );
@@ -44,13 +46,17 @@ module.exports = (sequelize, DataTypes) => {
       },
       status: {
         type: DataTypes.STRING,
+        allowNull: false,
         validate: {
+          notNull: true,
           isIn: [["to plan", "to code", "to execute", "done"]],
         },
       },
       due_date: {
         type: DataTypes.DATE,
+        allowNull: false,
         validate: {
+          notNull: false,
           notEmpty: true,
           isValidDate(value) {
             if (!moment(value, moment.ISO_8601, true).isValid()) {

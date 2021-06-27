@@ -1,7 +1,7 @@
 const{todo_list} = require('../models')
 class todo{
-    static listTodo(req,res){
-        todo_list.findAll()
+    static listTodo(req,res,next){
+        todo_list.findAll({where:{user_id:req.user_id}})
         .then(result=>{
             if (result.length === 0) {
                 res.status(204).json({"message":"Todo tidak ditemukan"})
@@ -9,76 +9,63 @@ class todo{
                 res.status(200).json(result)
             }
         })
-        .catch(err =>{
-            res.status(500)
-        })
+        .catch((err) => {
+              next(err)
+          });
     }
     static listTodo_Id(req,res){
-        const {id} = req.params
-        todo_list.findByPk(+id)
-        .then(result =>{
-            if (result.length === 0) {
-                res.status(204).json({"message":"Todo tidak ditemukan"})
-            }else{
-                res.status(200).json(result)
-            }
-        })
-        .catch(err =>{
-            res.status(500).json(err)
-        })
+        res.status(200).json({data:req.todo})
     }
-    static putTodo(req,res){
-        const {id} = req.params
+    static putTodo(req,res,next){
         const {title,description,status,due_date} = req.body
-        todo_list.update({title,description,status,due_date},{
-            where:{
-                id:+id
-            },
-            returning:true
+        const {todo} = req
+        todo.title = title
+        todo.description = description
+        todo.status = status
+        todo.due_date = due_date
+        todo.save()
+        .then(()=>{
+            res.status(200).json({data:todo,message:"todo successfully updated"})
         })
-        .then(result => {
-            res.status(200).json(result)
-        })
-        .catch(err => {
-           res.status(500).json({err})
-          })
+        .catch((err) => {
+            next(err)
+          });
     }
 
-    static addTodo(req,res){
+    static addTodo(req,res,next){
         const {title,description,status,due_date} = req.body
-        todo_list.create({title,description,status,due_date})
+        const{user_id} = req 
+        todo_list.create({title,description,status,due_date,user_id})
         .then(result => {
-            res.status(201).json(result)
+            res.status(201).json({messsage:"todo successfully added",data:result})
         })
-        .catch(err => {
-           res.status(500).json({"message":err.message})
-          })
+        .catch((err) => {
+           next(err)
+          });
     }
 
-    static deleteTodo(req,res){
-        const {id} = req.params
-        todo_list.destroy({
-            where:{
-                id:+id
-            }
-        })
+    static deleteTodo(req,res,next){
+        const {todo} = req
+        todo.destroy()
         .then(() => {
             res.status(200).json({"message":"todo success to delete"})
         })
-        .catch(err => {
-           res.status(500).json(err)
-          })
+        .catch((err) => {
+           next(err)
+          });
     }
 
-    static patchTodo(req,res){
-        const {id} = req.params
+    static patchTodo(req,res,next){
+        const {todo} = req
         const {status} = req.body
-        todo_list.update({status},{
-            where:{
-                id:+id
-            },
-            returning:true
+        todo.status = status
+        todo.save()
+        .then(()=>{
+            res.status(200).json({data:todo,message:"status successfully updated"})
         })
+        .catch((err) => {
+            next(err)
+          });
     }
 
 }

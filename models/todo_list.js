@@ -36,8 +36,8 @@ module.exports = (sequelize, DataTypes) => {
       validate:{
         isPost(value){
           let now = new Date()
-          now = moment(now).format("DD-MM-YYYY")
-          value = moment(value).format("DD-MM-YYYY")
+          now = moment(now).format("YYYY-MM-DD")
+          value = moment(value).format("YYYY-MM-DD")
           if (value < now) {
             throw new Error("Hanya boleh input tanggal sekarang dan setelahnya")
           }
@@ -54,7 +54,7 @@ module.exports = (sequelize, DataTypes) => {
   }, {
     hooks:{
       beforeCreate: user =>{
-        user.due_date = moment(user.due_date).format("DD-MM-YYYY")
+        user.due_date = moment(user.due_date).format("YYYY-MM-DD")
       }
     },
     sequelize,

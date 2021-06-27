@@ -1,8 +1,8 @@
 const jwt = require('jsonwebtoken');
-
+const{todo_list} = require('../models')
 const auth = (req,res,next)=>{
     if (!req.headers.token) {
-        return res.status(401).json({"message":"token invalid"})
+        return next({name:'Invalid Token'})
     }
     else{
         try {
@@ -11,9 +11,25 @@ const auth = (req,res,next)=>{
             next()
           }
           catch (err) {
-            res.status(401).json({ "message": "invalid access token" })
+            next({name:'invalid access token'})
           }
     }
 }
 
-module.exports = auth
+const author = (req,res,next)=>{
+      const {id} = req.params
+      todo_list.findOne({where:{id:id,user_id:req.user_id}})
+      .then(data =>{
+        if (!data){
+          throw{name:'Todo not found'}
+        }else{
+          req.todo = data
+          next()
+         }
+      })
+      .catch(err=>{
+        next(err)
+      })
+}
+
+module.exports = {auth,author}

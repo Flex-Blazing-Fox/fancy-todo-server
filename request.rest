@@ -1,0 +1,19 @@
+###register
+POST http://localhost:3000/register
+Content-Type: application/json
+
+
+{
+    "email":"coba@mail.com",
+    "password":"123coba"
+}
+
+###login
+GET http://localhost:3000/login
+Content-Type: application/json
+token:
+
+{
+    "email":"user6@mail.com",
+    "password":"123456"
+}

@@ -246,13 +246,33 @@ describe("Todo API", () => {
         .end((err, response) => {
           response.should.have.status(400);
           response.body.should.be.a("object");
-          response.body.should.have.property("error").to.be.a("array");
+          response.body.should.have.property("error").to.be.a("array").that.includes("Todo.title cannot be null");;
           done();
         });
     });
   });
 
   // Create todo with empty title
+  describe("POST /todo without title", () => {
+    it("should not create new todo", (done) => {
+      chai
+        .request(server)
+        .post("/todo")
+        .set("access_token", tokenUser1)
+        .send({
+          description: "Support BOOM!",
+          status: "to execute",
+          due_date: "2021-06-30 00:00:00",
+        })
+        .end((err, response) => {
+          response.should.have.status(400);
+          response.body.should.be.a("object");
+          response.body.should.have.property("error").to.be.a("array")
+          done();
+        });
+    });
+  });
+
   // Create todo without description
   // Create todo with empty description
   // Create todo without status
@@ -261,21 +281,7 @@ describe("Todo API", () => {
   // Create todo with empty due date
   // Create todo with invalid date time string format due date
   // Patch todo
-  // Patch todo with empty title
-  // Path todo with empty description
-  // Patch todo with status not in ["to plan", "to code", "to execute", "done"]
-  // Patch todo with empty due date
-  // Patch todo with invalid date time string format due date
   // Put todo
-  // Put todo without title
-  // Put todo with empty title
-  // Put todo without description
-  // Put todo with empty description
-  // Put todo without status
-  // Put todo with status not in ["to plan", "to code", "to execute", "done"]
-  // Put todo without due date
-  // Put todo with empty due date
-  // Put todo with invalid date time string format due date
   // Delete todo
 
   // ========================================================================= //

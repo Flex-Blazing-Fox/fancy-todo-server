@@ -202,7 +202,7 @@ describe("Todo API", () => {
     });
   });
 
-  // Create todo
+  // // Create todo
   // describe("POST /todo", () => {
   //   it("should create new todo", (done) => {
   //     chai
@@ -225,7 +225,7 @@ describe("Todo API", () => {
   //         response.body.should.have.property("status").eq("to execute");
   //         response.body.should.have
   //           .property("due_date")
-  //           .eq("2021-06-29T17:00:00.000Z");
+  //           .eq("2021-06-30T00:00:00.000Z");
   //         done();
   //       });
   //   });
@@ -425,7 +425,7 @@ describe("Todo API", () => {
             .property("error")
             .to.be.a("array")
             .eql([
-              "Masukkan input berupa format tanggal dan waktu",
+              "Masukkan input berupa format tanggal dan waktu (YYYY-MM-DD hh:mm:ss)",
               "Validation notEmpty on due_date failed",
             ]);
           done();
@@ -444,7 +444,7 @@ describe("Todo API", () => {
           title: "Watch BOOM at TI Qualifier",
           description: "Support BOOM!",
           status: "to execute",
-          due_date: "12312",
+          due_date: "123",
         })
         .end((err, response) => {
           response.should.have.status(400);
@@ -453,7 +453,34 @@ describe("Todo API", () => {
             .property("error")
             .to.be.a("array")
             .eql([
-              "Masukkan input berupa format tanggal dan waktu"
+              "Masukkan input berupa format tanggal dan waktu (YYYY-MM-DD hh:mm:ss)"
+            ]);
+          done();
+        });
+    });
+  });
+
+  // Create todo with due date less than current time
+  describe("POST /todo with with due date less than current time", () => {
+    it("should not create new todo", (done) => {
+      chai
+        .request(server)
+        .post("/todo")
+        .set("access_token", tokenUser1)
+        .send({
+          title: "Watch BOOM at TI Qualifier",
+          description: "Support BOOM!",
+          status: "to execute",
+          due_date: "2021-06-03 00:00:00",
+        })
+        .end((err, response) => {
+          response.should.have.status(400);
+          response.body.should.be.a("object");
+          response.body.should.have
+            .property("error")
+            .to.be.a("array")
+            .eql([
+              "Due date tidak boleh kurang dari waktu saat ini"
             ]);
           done();
         });
@@ -461,6 +488,27 @@ describe("Todo API", () => {
   });
 
   // Patch todo
+  describe("PATCH /todo", () => {
+    it("should patch todo", (done) => {
+      chai
+        .request(server)
+        .patch("/todo/1")
+        .set("access_token", tokenUser1)
+        .send({
+          title: "Truncating Saving Accounts DAG",
+        })
+        .end((err, response) => {
+          console.log(response)
+          response.should.have.status(200);
+          response.body.should.be.a("object");
+          response.body.should.have
+            .property("id")
+            .eq("Truncating Saving Accounts DAG")
+          done();
+        });
+    });
+  });
+  
   // Put todo
   // Delete todo
 

@@ -5,39 +5,56 @@ const chaiHttp = require("chai-http");
 const { describe } = require("mocha");
 const server = require("../index");
 const bcrypt = require("bcrypt");
+const { response } = require("express");
 const salt = bcrypt.genSaltSync(10);
 chai.should();
 chai.use(chaiHttp);
 
 describe("Todo API", () => {
+  const user1Credential = {
+    email: "user1@gmail.com",
+    password: "user1",
+  };
+  let tokenUser1;
+  before((done) => {
+    chai
+      .request(server)
+      .post("/user/login")
+      .send(user1Credential)
+      .end((err, response) => {
+        tokenUser1 = response.body.access_token;
+        done();
+      });
+  });
+
   // ========================================================================= //
 
   // Testing Registration
 
-  // Normal registration
-  describe("POST /user/register", () => {
-    it("should do registration", (done) => {
-      chai
-        .request(server)
-        .post("/user/register")
-        .send({
-          email: "user4@gmail.com",
-          password: "user4",
-        })
-        .end((err, response) => {
-          let hash = bcrypt.hashSync("user4", salt);
-          response.should.have.status(201);
-          response.body.should.be.a("object");
-          response.body.should.have.property("email").eq("user4@gmail.com");
-          response.body.should.have.property("password").to.include("$2");
-          done();
-        });
-    });
-  });
+  // // Normal registration
+  // describe("POST /user/register", () => {
+  //   it("should do registration", (done) => {
+  //     chai
+  //       .request(server)
+  //       .post("/user/register")
+  //       .send({
+  //         email: "user4@gmail.com",
+  //         password: "user4",
+  //       })
+  //       .end((err, response) => {
+  //         let hash = bcrypt.hashSync("user4", salt);
+  //         response.should.have.status(201);
+  //         response.body.should.be.a("object");
+  //         response.body.should.have.property("email").eq("user4@gmail.com");
+  //         response.body.should.have.property("password").to.include("$2");
+  //         done();
+  //       });
+  //   });
+  // });
 
   // Registration with already used email
-  describe("POST /user/register", () => {
-    it("should not do registration because of already used email", (done) => {
+  describe("POST /user/register wih already used email", () => {
+    it("should not do registration", (done) => {
       chai
         .request(server)
         .post("/user/register")
@@ -58,8 +75,8 @@ describe("Todo API", () => {
   });
 
   // Registration without email
-  describe("POST /user/register", () => {
-    it("should not do registration because email data is not provided", (done) => {
+  describe("POST /user/register without emaild data provided", () => {
+    it("should not do registration", (done) => {
       chai
         .request(server)
         .post("/user/register")
@@ -79,8 +96,8 @@ describe("Todo API", () => {
   });
 
   // Registration with empty email
-  describe("POST /user/register", () => {
-    it("should not do registration because email data is empty", (done) => {
+  describe("POST /user/register with empty email", () => {
+    it("should not do registration", (done) => {
       chai
         .request(server)
         .post("/user/register")
@@ -104,8 +121,8 @@ describe("Todo API", () => {
   });
 
   // Registration with invalid email format
-  describe("POST /user/register", () => {
-    it("should not do registration because of invalid email format", (done) => {
+  describe("POST /user/register with invalid email format", () => {
+    it("should not do registration", (done) => {
       chai
         .request(server)
         .post("/user/register")
@@ -126,8 +143,8 @@ describe("Todo API", () => {
   });
 
   // Registration with empty password
-  describe("POST /user/register", () => {
-    it("should not do registration because of empty password", (done) => {
+  describe("POST /user/register with empty password", () => {
+    it("should not do registration", (done) => {
       chai
         .request(server)
         .post("/user/register")
@@ -152,61 +169,113 @@ describe("Todo API", () => {
   // Testing Authorized User
 
   // Get all todo
+  describe("GET /todo", () => {
+    it("should get all authorized todo", (done) => {
+      chai
+        .request(server)
+        .get("/todo")
+        .set("access_token", tokenUser1)
+        .end((err, response) => {
+          ids = response.body.map((res) => res.id);
+          response.should.have.status(200);
+          response.body.should.be.a("array");
+          response.body.length.should.be.eq(2);
+          ids.should.have.members([1, 2]);
+          done();
+        });
+    });
+  });
 
   // Get certain id todo
+  describe("GET /todo/1", () => {
+    it("should get all certain authorized todo", (done) => {
+      chai
+        .request(server)
+        .get("/todo/1")
+        .set("access_token", tokenUser1)
+        .end((err, response) => {
+          response.should.have.status(200);
+          response.body.should.be.a("object");
+          response.body.should.have.property("id").eq(1);
+          done();
+        });
+    });
+  });
 
   // Create todo
+  describe("POST /todo", () => {
+    it("should create new todo", (done) => {
+      chai
+        .request(server)
+        .post("/todo")
+        .set("access_token", tokenUser1)
+        .send({
+          title: "Watch SEA TI Qualifier",
+          description: "Support BOOM!",
+          status: "to execute",
+          due_date: "2021-06-30 00:00:00",
+        })
+        .end((err, response) => {
+          response.should.have.status(201);
+          response.body.should.be.a("object");
+          response.body.should.have
+            .property("title")
+            .eq("Watch SEA TI Qualifier");
+          response.body.should.have.property("description").eq("Support BOOM!");
+          response.body.should.have.property("status").eq("to execute");
+          response.body.should.have
+            .property("due_date")
+            .eq("2021-06-29T17:00:00.000Z");
+          done();
+        });
+    });
+  });
 
   // Create todo without title
+  describe("POST /todo without title", () => {
+    it("should not create new todo", (done) => {
+      chai
+        .request(server)
+        .post("/todo")
+        .set("access_token", tokenUser1)
+        .send({
+          description: "Support BOOM!",
+          status: "to execute",
+          due_date: "2021-06-30 00:00:00",
+        })
+        .end((err, response) => {
+          response.should.have.status(400);
+          response.body.should.be.a("object");
+          response.body.should.have.property("error").to.be.a("array");
+          done();
+        });
+    });
+  });
 
   // Create todo with empty title
-
   // Create todo without description
-
   // Create todo with empty description
-
   // Create todo without status
-
   // Create todo with status not in ["to plan", "to code", "to execute", "done"]
-
   // Create todo without due date
-
   // Create todo with empty due date
-
   // Create todo with invalid date time string format due date
-
   // Patch todo
-
   // Patch todo with empty title
-
   // Path todo with empty description
-
   // Patch todo with status not in ["to plan", "to code", "to execute", "done"]
-
   // Patch todo with empty due date
-
   // Patch todo with invalid date time string format due date
-
   // Put todo
-
   // Put todo without title
-
   // Put todo with empty title
-
   // Put todo without description
-
   // Put todo with empty description
-
   // Put todo without status
-
   // Put todo with status not in ["to plan", "to code", "to execute", "done"]
-
   // Put todo without due date
-
   // Put todo with empty due date
-
   // Put todo with invalid date time string format due date
-
   // Delete todo
 
   // ========================================================================= //

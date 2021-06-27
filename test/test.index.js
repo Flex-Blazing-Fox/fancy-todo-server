@@ -5,8 +5,8 @@ const chaiHttp = require("chai-http");
 const { describe } = require("mocha");
 const server = require("../index");
 const bcrypt = require("bcrypt");
-const { response } = require("express");
 const salt = bcrypt.genSaltSync(10);
+const crypto = require("crypto");
 chai.should();
 chai.use(chaiHttp);
 
@@ -203,33 +203,33 @@ describe("Todo API", () => {
   });
 
   // Create todo
-  describe("POST /todo", () => {
-    it("should create new todo", (done) => {
-      chai
-        .request(server)
-        .post("/todo")
-        .set("access_token", tokenUser1)
-        .send({
-          title: "Watch SEA TI Qualifier",
-          description: "Support BOOM!",
-          status: "to execute",
-          due_date: "2021-06-30 00:00:00",
-        })
-        .end((err, response) => {
-          response.should.have.status(201);
-          response.body.should.be.a("object");
-          response.body.should.have
-            .property("title")
-            .eq("Watch SEA TI Qualifier");
-          response.body.should.have.property("description").eq("Support BOOM!");
-          response.body.should.have.property("status").eq("to execute");
-          response.body.should.have
-            .property("due_date")
-            .eq("2021-06-29T17:00:00.000Z");
-          done();
-        });
-    });
-  });
+  // describe("POST /todo", () => {
+  //   it("should create new todo", (done) => {
+  //     chai
+  //       .request(server)
+  //       .post("/todo")
+  //       .set("access_token", tokenUser1)
+  //       .send({
+  //         title: "Watch SEA TI Qualifier",
+  //         description: "Support BOOM!",
+  //         status: "to execute",
+  //         due_date: "2021-06-30 00:00:00",
+  //       })
+  //       .end((err, response) => {
+  //         response.should.have.status(201);
+  //         response.body.should.be.a("object");
+  //         response.body.should.have
+  //           .property("title")
+  //           .eq("Watch SEA TI Qualifier");
+  //         response.body.should.have.property("description").eq("Support BOOM!");
+  //         response.body.should.have.property("status").eq("to execute");
+  //         response.body.should.have
+  //           .property("due_date")
+  //           .eq("2021-06-29T17:00:00.000Z");
+  //         done();
+  //       });
+  //   });
+  // });
 
   // Create todo without title
   describe("POST /todo without title", () => {
@@ -246,7 +246,10 @@ describe("Todo API", () => {
         .end((err, response) => {
           response.should.have.status(400);
           response.body.should.be.a("object");
-          response.body.should.have.property("error").to.be.a("array").that.includes("Todo.title cannot be null");;
+          response.body.should.have
+            .property("error")
+            .to.be.a("array")
+            .that.includes("Todo.title cannot be null");
           done();
         });
     });
@@ -260,6 +263,7 @@ describe("Todo API", () => {
         .post("/todo")
         .set("access_token", tokenUser1)
         .send({
+          title: "",
           description: "Support BOOM!",
           status: "to execute",
           due_date: "2021-06-30 00:00:00",
@@ -267,19 +271,195 @@ describe("Todo API", () => {
         .end((err, response) => {
           response.should.have.status(400);
           response.body.should.be.a("object");
-          response.body.should.have.property("error").to.be.a("array")
+          response.body.should.have
+            .property("error")
+            .to.be.a("array")
+            .that.includes("Validation notEmpty on title failed");
           done();
         });
     });
   });
 
-  // Create todo without description
-  // Create todo with empty description
+  // Create todo with title more than 100 characters
+  describe("POST /todo with title more than 100 characters", () => {
+    it("should not create new todo", (done) => {
+      chai
+        .request(server)
+        .post("/todo")
+        .set("access_token", tokenUser1)
+        .send({
+          title: crypto.randomBytes(110).toString("hex"),
+          description: "Support BOOM!",
+          status: "to execute",
+          due_date: "2021-06-30 00:00:00",
+        })
+        .end((err, response) => {
+          response.should.have.status(400);
+          response.body.should.be.a("object");
+          response.body.should.have
+            .property("error")
+            .to.be.a("array")
+            .that.includes("Panjang judul tidak boleh lebih dari 100 karakter");
+          done();
+        });
+    });
+  });
+
+  // Create todo with description more than 500 characters
+  describe("POST /todo with title more than 100 characters", () => {
+    it("should not create new todo", (done) => {
+      chai
+        .request(server)
+        .post("/todo")
+        .set("access_token", tokenUser1)
+        .send({
+          title: "Watch BOOM at TI Qualifier",
+          description: crypto.randomBytes(510).toString("hex"),
+          status: "to execute",
+          due_date: "2021-06-30 00:00:00",
+        })
+        .end((err, response) => {
+          response.should.have.status(400);
+          response.body.should.be.a("object");
+          response.body.should.have
+            .property("error")
+            .to.be.a("array")
+            .that.includes(
+              "Panjang deskripsi tidak boleh lebih dari 500 karakter"
+            );
+          done();
+        });
+    });
+  });
+
   // Create todo without status
+  describe("POST /todo without status", () => {
+    it("should not create new todo", (done) => {
+      chai
+        .request(server)
+        .post("/todo")
+        .set("access_token", tokenUser1)
+        .send({
+          title: "Watch BOOM at TI Qualifier",
+          description: "Support BOOM!",
+          due_date: "2021-06-30 00:00:00",
+        })
+        .end((err, response) => {
+          response.should.have.status(400);
+          response.body.should.be.a("object");
+          response.body.should.have
+            .property("error")
+            .to.be.a("array")
+            .that.includes("Todo.status cannot be null");
+          done();
+        });
+    });
+  });
+
   // Create todo with status not in ["to plan", "to code", "to execute", "done"]
+  describe("POST /todo with status not in ['to plan', 'to code', 'to execute', 'done']", () => {
+    it("should not create new todo", (done) => {
+      chai
+        .request(server)
+        .post("/todo")
+        .set("access_token", tokenUser1)
+        .send({
+          title: "Watch BOOM at TI Qualifier",
+          description: "Support BOOM!",
+          status: "to do",
+          due_date: "2021-06-30 00:00:00",
+        })
+        .end((err, response) => {
+          response.should.have.status(400);
+          response.body.should.be.a("object");
+          response.body.should.have
+            .property("error")
+            .to.be.a("array")
+            .that.includes("Validation isIn on status failed");
+          done();
+        });
+    });
+  });
+
   // Create todo without due date
+  describe("POST /todo without due date", () => {
+    it("should not create new todo", (done) => {
+      chai
+        .request(server)
+        .post("/todo")
+        .set("access_token", tokenUser1)
+        .send({
+          title: "Watch BOOM at TI Qualifier",
+          description: "Support BOOM!",
+          status: "to do",
+        })
+        .end((err, response) => {
+          response.should.have.status(400);
+          response.body.should.be.a("object");
+          response.body.should.have
+            .property("error")
+            .to.be.a("array")
+            .that.includes("Todo.due_date cannot be null");
+          done();
+        });
+    });
+  });
+
   // Create todo with empty due date
+  describe("POST /todo with empty due date", () => {
+    it("should not create new todo", (done) => {
+      chai
+        .request(server)
+        .post("/todo")
+        .set("access_token", tokenUser1)
+        .send({
+          title: "Watch BOOM at TI Qualifier",
+          description: "Support BOOM!",
+          status: "to execute",
+          due_date: "",
+        })
+        .end((err, response) => {
+          response.should.have.status(400);
+          response.body.should.be.a("object");
+          response.body.should.have
+            .property("error")
+            .to.be.a("array")
+            .eql([
+              "Masukkan input berupa format tanggal dan waktu",
+              "Validation notEmpty on due_date failed",
+            ]);
+          done();
+        });
+    });
+  });
+
   // Create todo with invalid date time string format due date
+  describe("POST /todo with invalid date time string format due date", () => {
+    it("should not create new todo", (done) => {
+      chai
+        .request(server)
+        .post("/todo")
+        .set("access_token", tokenUser1)
+        .send({
+          title: "Watch BOOM at TI Qualifier",
+          description: "Support BOOM!",
+          status: "to execute",
+          due_date: "12312",
+        })
+        .end((err, response) => {
+          response.should.have.status(400);
+          response.body.should.be.a("object");
+          response.body.should.have
+            .property("error")
+            .to.be.a("array")
+            .eql([
+              "Masukkan input berupa format tanggal dan waktu"
+            ]);
+          done();
+        });
+    });
+  });
+
   // Patch todo
   // Put todo
   // Delete todo
@@ -292,25 +472,9 @@ describe("Todo API", () => {
 
   // Get certain id todo for unauthorized account for the todo
 
-  // Patch unauthorized todo
-
-  // Put unauthorized todo
-
-  // Delete unauthorized todo
-
   // ========================================================================= //
 
   // Testing for unauthenticated account
 
   // Get all todo without token
-
-  // Get certain id todo without token
-
-  // Create todo without token
-
-  // Patch todo without token
-
-  // Put todo without token
-
-  // Delete todo without token
 });

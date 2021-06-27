@@ -7,6 +7,7 @@ const server = require("../index");
 const bcrypt = require("bcrypt");
 const salt = bcrypt.genSaltSync(10);
 const crypto = require("crypto");
+const { response } = require("express");
 chai.should();
 chai.use(chaiHttp);
 
@@ -15,7 +16,11 @@ describe("Todo API", () => {
     email: "user1@gmail.com",
     password: "user1",
   };
-  let tokenUser1;
+  const user3Credential = {
+    email: "user3@gmail.com",
+    password: "user3",
+  };
+  let tokenUser1, tokenUser3;
   before((done) => {
     chai
       .request(server)
@@ -23,6 +28,13 @@ describe("Todo API", () => {
       .send(user1Credential)
       .end((err, response) => {
         tokenUser1 = response.body.access_token;
+      });
+    chai
+      .request(server)
+      .post("/user/login")
+      .send(user3Credential)
+      .end((err, response) => {
+        tokenUser3 = response.body.access_token;
         done();
       });
   });
@@ -453,7 +465,7 @@ describe("Todo API", () => {
             .property("error")
             .to.be.a("array")
             .eql([
-              "Masukkan input berupa format tanggal dan waktu (YYYY-MM-DD hh:mm:ss)"
+              "Masukkan input berupa format tanggal dan waktu (YYYY-MM-DD hh:mm:ss)",
             ]);
           done();
         });
@@ -479,9 +491,7 @@ describe("Todo API", () => {
           response.body.should.have
             .property("error")
             .to.be.a("array")
-            .eql([
-              "Due date tidak boleh kurang dari waktu saat ini"
-            ]);
+            .eql(["Due date tidak boleh kurang dari waktu saat ini"]);
           done();
         });
     });
@@ -498,31 +508,149 @@ describe("Todo API", () => {
           title: "Truncating Saving Accounts DAG",
         })
         .end((err, response) => {
-          console.log(response)
           response.should.have.status(200);
           response.body.should.be.a("object");
           response.body.should.have
-            .property("id")
-            .eq("Truncating Saving Accounts DAG")
+            .property("title")
+            .eq("Truncating Saving Accounts DAG");
           done();
         });
     });
   });
-  
+
   // Put todo
+  describe("PUT /todo", () => {
+    it("should put todo", (done) => {
+      chai
+        .request(server)
+        .put("/todo/1")
+        .set("access_token", tokenUser1)
+        .send({
+          title: "Truncating Saved Accounts Data",
+          description:
+            "After the fix for different accrued interest is merged, the dwh core saving accounts need to be merged.",
+          status: "done",
+          due_date: "2021-07-01 00:00:00",
+        })
+        .end((err, response) => {
+          response.should.have.status(200);
+          response.body.should.be.a("object");
+          response.body.should.have
+            .property("title")
+            .eq("Truncating Saved Accounts Data");
+          response.body.should.have
+            .property("description")
+            .eq(
+              "After the fix for different accrued interest is merged, the dwh core saving accounts need to be merged."
+            );
+          response.body.should.have.property("status").eq("done");
+          response.body.should.have
+            .property("due_date")
+            .eq("2021-07-01T00:00:00.000Z");
+          done();
+        });
+    });
+  });
+
+  // Put todo with incomplete data
+  describe("PUT /todo with incomplete data", () => {
+    it("should not put todo", (done) => {
+      chai
+        .request(server)
+        .put("/todo/1")
+        .set("access_token", tokenUser1)
+        .send({
+          title: "Truncating Saved Accounts DAG",
+        })
+        .end((err, response) => {
+          response.should.have.status(400);
+          response.body.should.be.a("object");
+          response.body.should.have
+            .property("error")
+            .eql([
+              "All data (title, description, status, and due date) must be provided",
+            ]);
+          done();
+        });
+    });
+  });
+
   // Delete todo
+  // describe("DELETE /todo", () => {
+  //   it("should delete todo", (done) => {
+  //     chai
+  //       .request(server)
+  //       .delete("/todo/1")
+  //       .set("access_token", tokenUser1)
+  //       .end((err, response) => {
+  //         response.should.have.status(200);
+  //         response.should.be.a("object");
+  //         response.body.should.have
+  //           .property("message")
+  //           .eql("Record with id 1 successfully deleted");
+  //         done();
+  //       });
+  //   });
+  // });
 
   // ========================================================================= //
 
   // Testing for unauthorized account
 
   // Get all todo for account which has 0 todo list
+  describe("GET /todo for account which has 0 todo list", () => {
+    it("should return no todo list message", (done) => {
+      chai
+        .request(server)
+        .get("/todo")
+        .set("access_token", tokenUser3)
+        .end((err, response) => {
+          response.should.have.status(200);
+          response.should.be.a("object");
+          response.body.should.have
+            .property("message")
+            .eql("no todo list created");
+          done();
+        });
+    });
+  });
 
   // Get certain id todo for unauthorized account for the todo
+  describe("GET /todo for unauthorized todo", () => {
+    it("should not get todo", (done) => {
+      chai
+        .request(server)
+        .get("/todo/1")
+        .set("access_token", tokenUser3)
+        .end((err, response) => {
+          response.should.have.status(404);
+          response.should.be.a("object");
+          response.body.should.have
+            .property("error")
+            .eql(["Todo with id 1 is not found / authorized"]);
+          done();
+        });
+    });
+  });
 
   // ========================================================================= //
 
   // Testing for unauthenticated account
 
   // Get all todo without token
+  describe("GET /todo for unauthorized todo", () => {
+    it("should not get todo", (done) => {
+      chai
+        .request(server)
+        .get("/todo/1")
+        .end((err, response) => {
+          response.should.have.status(401);
+          response.should.be.a("object");
+          response.body.should.have
+            .property("error")
+            .eql(["Token is not exist or invalid token"]);
+          done();
+        });
+    });
+  });
 });

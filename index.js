@@ -9,6 +9,6 @@ app.use(express.urlencoded({ extended: true }));
 app.use(routers);
 app.use(errorHandler);
 
-app.listen(PORT, () => {
+module.exports = app.listen(PORT, () => {
   console.log(`listening to PORT ${PORT}`);
 });

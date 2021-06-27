@@ -4,8 +4,9 @@
   "description": "fancy-todo-server",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "node_modules/nodemon/bin/nodemon.js index.js"
+    "test": "mocha --timeout 10000",
+    "dev": "set NODE_ENV=dev && node_modules/nodemon/bin/nodemon.js index.js",
+    "prepare": "husky install"
   },
   "repository": {
     "type": "git",
@@ -27,5 +28,12 @@
     "nodemon": "^2.0.7",
     "pg": "^8.6.0",
     "sequelize": "^6.6.2"
+  },
+  "devDependencies": {
+    "chai": "^4.3.4",
+    "chai-http": "^4.3.0",
+    "crypto": "^1.0.1",
+    "husky": "^6.0.0",
+    "mocha": "^9.0.1"
   }
 }

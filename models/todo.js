@@ -22,7 +22,8 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         allowNull: false, 
         validate: {
-          notNull: true, 
+          notNull: true,
+          notEmpty: true, 
           isAppropriateLength(value) {
             if (value.length > 100) {
               throw new Error(

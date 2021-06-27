@@ -20,10 +20,10 @@ module.exports = (sequelize, DataTypes) => {
     {
       title: {
         type: DataTypes.STRING,
-        allowNull: false, 
+        allowNull: false,
         validate: {
           notNull: true,
-          notEmpty: true, 
+          notEmpty: true,
           isAppropriateLength(value) {
             if (value.length > 100) {
               throw new Error(
@@ -54,14 +54,19 @@ module.exports = (sequelize, DataTypes) => {
         },
       },
       due_date: {
-        type: DataTypes.DATE,
+        type: DataTypes.STRING,
         allowNull: false,
         validate: {
           notNull: false,
           notEmpty: true,
           isValidDate(value) {
-            if (!moment(value, moment.ISO_8601, true).isValid()) {
-              throw new Error("Masukkan input berupa format tanggal dan waktu");
+            if (
+              !moment(value, moment.ISO_8601, true).isValid() ||
+              value.length < 19
+            ) {
+              throw new Error(
+                "Masukkan input berupa format tanggal dan waktu (YYYY-MM-DD hh:mm:ss)"
+              );
             } else if (moment(value, "YYYY-MM-DD hh:mm:ss") < moment()) {
               throw new Error(
                 "Due date tidak boleh kurang dari waktu saat ini"

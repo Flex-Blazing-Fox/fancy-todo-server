@@ -64,7 +64,7 @@ class todoController {
         },
         returning: true,
       })
-        .then((result) => res.status(200).json(result[1]))
+        .then((result) => res.status(200).json(result[1][0]))
         .catch((err) => {
           if (err.name === "SequelizeValidationError") {
             next({
@@ -98,7 +98,7 @@ class todoController {
           returning: true,
         }
       )
-        .then((result) => res.status(200).json(result[1]))
+        .then((result) => res.status(200).json(result[1][0]))
         .catch((err) => {
           if (err.name === "SequelizeValidationError") {
             next({

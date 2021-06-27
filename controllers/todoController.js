@@ -2,7 +2,9 @@ const { Todo } = require('../models')
 
 class TodoController{
     static getAll(req, res) {
-        Todo.findAll()
+        Todo.findAll({
+            where: {userId: req.userId}
+        })
         .then(data => {
             res.status(200).json(data)
         })
@@ -18,7 +20,8 @@ class TodoController{
                 title, 
                 description, 
                 status, 
-                due_date 
+                due_date,
+                userId : req.userId 
             }
         )
         .then(data => {
@@ -34,43 +37,24 @@ class TodoController{
     }
 
     static findById(req, res) {
-        const { id } = req.params
-        Todo.findOne({
-            where: {id: +id}
-        })
-        .then(data => {
-            if (!data) {
-                res.status(404).json({"message":"Data Not Found"})
-            } else {
-                res.status(200).json(data)
-            }
-        })
-        .catch(err => {
-            res.status(404).json(err)
-        })
+       
+        res.status(200).json(req.todos)
     }
 
     static updateTodos(req, res) {
-        const { id } = req.params
-        let { title, description, status, due_date } = req.body
-        Todo.create(
-            { 
-                title, 
-                description, 
-                status, 
-                due_date 
-            },
-            {
-                where: {id: +id},
-                returning: true
-            }
-        )
-        .then(data => {
-            if (data[0] === 1) {
-                res.status(200).json(data[1])
-            } else {
-                res.status(404).json({"message":"Data Not Found"})
-            }
+
+        const { title, description, status, due_date } = req.body
+        const { todos } = req
+
+        todos.title = title
+        todos.description = description
+        todos.status = status
+        todos.due_date = due_date
+
+        todos
+        .save()
+        .then((_) => {
+            res.status(200).json({data:todos})
         })
         .catch(err => {
             if(err.name = 'SequelizeValidationError'){
@@ -82,18 +66,15 @@ class TodoController{
     }
 
     static statusUpdate(req, res) {
-        const { id } = req.params
         const { status } = req.body
-        Todo.update({status}, {
-            where: {id: +id},
-            returning: true
-        })
-        .then(data => {
-            if (data[0] === 1) {
-                res.status(200).json(data[1])
-            } else {
-                res.status(404).json({"message":"Data Not Found"})
-            }
+        const { todos } = req
+       
+        todos.status = status
+        
+        todos
+        .save()
+        .then((_) => {
+            res.status(200).json({data:todos})
         })
         .catch(err => {
             res.status(500).json(err)
@@ -101,16 +82,12 @@ class TodoController{
     }
 
     static deleteTodos(req, res) {
-        const { id } = req.params
-        Todo.destroy({
-            where:{id: +id}
-        })
-        .then(data => {
-            if (data !== 0) {
-                res.status(201).json({"message":"Delete Successfull",data})
-            } else {
-                res.status(404).json({"message":"Data Not Found"})
-            }
+        const { todos } = req
+
+        todos
+        .destroy()
+        .then((_)=> {
+            res.status(200).json({ message: "Todo deleted successfully!" })
         })
         .catch(err => {
             res.status(500).json(err)

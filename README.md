@@ -30,9 +30,10 @@
             ├── test.http
             └── views
         </pre>
-    3. Run `npm run dev` in your terminal and try hitting the endpoints below with the main resource is `http://localhost:3000` (you can use test.http file if you dont want to move to Postman or terminal)
-    4. We have **pre-commit** hook to automatically do **unit testing** before doing commit so make sure they are all passed
-    5. Making **Pull Request** also will trigger the **Github CI Workflow** so all Pull Request must be verified first
+    3. Edit the .env-template to make your own environment variable and rename the file from `.env-template` to `.env`
+    4. Run `npm run dev` in your terminal and try hitting the endpoints below with the main resource is `http://localhost:3000` (you can use test.http file if you dont want to move to Postman or terminal)
+    5. We have **pre-commit** hook to automatically do **unit testing** before doing commit so make sure they are all passed
+    6. Making **Pull Request** also will trigger the **Github CI Workflow** so all Pull Request must be verified first
 
 ## Endpoints
 The resource for the endpoint is https://fancy-todo-dev.herokuapp.com or http://localhost:3000. You can use either Postman, curl, or REST API Client

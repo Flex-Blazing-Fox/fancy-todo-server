@@ -34,7 +34,7 @@ class userController {
           const payload = {
             id: user.dataValues.id,
           };
-          const accessToken = jwt.sign(payload, "ABCD");
+          const accessToken = jwt.sign(payload, process.env.JWT_SECRET);
           res.status(200).json({ access_token: accessToken });
         } else {
           throw { name: "EMAIL / PASSWORD AUTHENTICATION FAIL" };

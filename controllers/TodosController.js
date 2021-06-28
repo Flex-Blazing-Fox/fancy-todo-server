@@ -1,17 +1,18 @@
 const { Todo } = require('../models')
+const todo = require('../models/todo')
 
 class TodosController {
-    static getAll (req, res) {
-        Todo.findAll()
-        .then(data => {
-            res.status(200).json(data)
+    static getAll (req, res, next) {
+        Todo.findAll({where: {userId: req.userId}})
+        .then(todo => {
+            res.status(200).json({data: todo})
         })
         .catch(err => {
-            res.status(500).json(err)
+            next(err)
         })
     }
 
-    static addTodo (req, res) {
+    static addTodo (req, res, next) {
         let { title, description, status, due_date, userId } = req.body
         Todo.create(
             {
@@ -19,82 +20,70 @@ class TodosController {
                 description,
                 status,
                 due_date,
-                userId
+                userId: req.userId
             }
         )
-        .then(data => {
-            res.status(201).json(data)
+        .then(todo => {
+            res.status(201).json({data : todo})
         })
         .catch(err => {
-            res.status(500).json(err)
+            next(err)
         })
     }
 
-    static findById (req, res) {
+    static findById (req, res, next) {
         const { id } = req.params
         Todo.findByPk(+id)
-        .then(data => {
-            res.status(200).json(data)
+        .then(todo => {
+            res.status(200).json({data : todo})
         })
         .catch(err => {
-            res.status(500).json(err)
+            next(err)
         })
     }
 
-    static putTodo(req, res) {
-        const { id } = req.params
+    static putTodo(req, res, next) {
+        const {todo} = req
         const { title, description, status, due_date, userId } = req.body
-
-        Todo.update(
-            {
-                title,
-                description,
-                status,
-                due_date,
-                userId
-            },
-            {
-                where: { id: +id },
-                returning: true,
-            }
-        )
-        .then(data => {
-            res.status(200).json(data)
+        todo.title = title
+        todo.description = description
+        todo.status = status
+        todo.due_date = due_date
+        todo.save()
+        .then(todo => {
+            res.status(200).json({data : todo})
         })
         .catch(err => {
-            res.status(500).json(err)
+            next(err)
         })
     }
 
-    static patchTodo(req, res) {
-        const { id } = req.params
+    static patchTodo(req, res, next) {
+        const {todo} = req
         const { status } = req.body
-        Todo.update({ status }, {
-            where: {id: +id},
-            returning: true
-        })
-        .then(data => {
-            res.status(200).json(data[1])
+        todo.status = status
+        todo.save()
+        .then(todo => {
+            res.status(200).json({data: todo})
         })
         .catch(err => {
-            res.status(500).json(err)
+            next(err)
         })
     }
 
-    static deleteTodo(req, res) {
+    static deleteTodo(req, res, next) {
         const { id } = req.params
         Todo.destroy({
             where: {id: +id},
             returning: true,
         })
-        .then(data => {
-            res.status(201).json(data[1])
+        .then(() => {
+            res.status(200).json({"message":"todo success to delete" })
         })
         .catch(err => {
-            res.status(500).json(err)
+            next(err)
         })
     }
-    
 }
 
 module.exports = TodosController

@@ -67,10 +67,10 @@ _Todos_
   Jika request berhasil
 
   ```
-  {
+ {
     "id": req.body.id,
     "email": req.body.email,
-  }
+ }
 
   ```
 
@@ -81,7 +81,7 @@ _Todos_
   jika ada value attributes tidak sesuai dengan validasi
 
   ```
-  {
+ {
     "err": [
         "Email must be not empty",
         "Must be email format",
@@ -89,7 +89,7 @@ _Todos_
         "Password min 6 characters",
         "There must be a number"
     ]
-  }
+ }
   ```
 
   **Code 500**
@@ -156,9 +156,9 @@ _Todos_
   Jika request berhasil
 
   ```
-  {
+ {
     "token": "access token"
-  }
+ }
 
   ```
 

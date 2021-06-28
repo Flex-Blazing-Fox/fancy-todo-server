@@ -13,7 +13,7 @@ class TodosController {
     }
 
     static addTodo (req, res, next) {
-        let { title, description, status, due_date, userId } = req.body
+        let { title, description, status, due_date } = req.body
         Todo.create(
             {
                 title,

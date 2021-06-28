@@ -38,7 +38,6 @@
 The resource for the endpoint is https://fancy-todo-dev.herokuapp.com or http://localhost:3000. You can use either Postman, curl, or REST API Client
 
 <img src=https://img.shields.io/badge/POST-%2Fuser%2Fregister-blueviolet width=162.5/>
-<br/>
 
 Registering your email and password
 - ### Request Body
@@ -60,7 +59,6 @@ Registering your email and password
     ```
 
 <img src=https://img.shields.io/badge/POST-%2Fuser%2Flogin-blueviolet width=143>
-<br/>
 
 Login your email and password
 - ### Request Body

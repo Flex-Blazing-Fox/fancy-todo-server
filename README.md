@@ -38,7 +38,7 @@
 The resource for the endpoint is https://fancy-todo-dev.herokuapp.com or http://localhost:3000. You can use either Postman, curl, or REST API Client
 <br/>
 
-
+<br/>
 <img src=https://img.shields.io/badge/POST-%2Fuser%2Fregister-blueviolet width=162.5/>
 <br/>
 
@@ -60,7 +60,7 @@ Registering your email and password
         "createdAt": "2021-06-28T12:04:30.390Z"
     }
     ```
-
+<br/>
 <img src=https://img.shields.io/badge/POST-%2Fuser%2Flogin-blueviolet width=143>
 <br/>
 
@@ -115,6 +115,7 @@ Get all todo list that you've made
         }
     ]
     ```
+<br/>
 <img src=https://img.shields.io/badge/GET-%2Ftodo%2F%3Aid-blue width=119>
 <br/>
 
@@ -140,6 +141,7 @@ Get todo with certain id (only if it's the todo that you've created)
         "user_id": 1
     }
     ```
+<br/>
 <img src=https://img.shields.io/badge/POST-%2Ftodo-blue width=101.5>
 <br/>
 
@@ -172,6 +174,7 @@ Make new todo
         "createdAt": "2021-06-28T12:30:00.014Z"
     }
     ```
+<br/>
 <img src=https://img.shields.io/badge/PUT-%2Ftodo%2F%3Aid-blue width=122>
 <br/>
 
@@ -206,6 +209,7 @@ Updating the todo record
         "user_id": 1
     }
     ```
+<br/>
 <img src=https://img.shields.io/badge/PATCH-%2Ftodo%2F%3Aid-blue width=140>
 <br/>
 
@@ -237,6 +241,7 @@ Updating the todo's value
         "user_id": 1
     }
     ```
+<br/>
 <img src=https://img.shields.io/badge/DELETE-%2Ftodo%2F%3Aid-blue width=145>
 <br/>
 

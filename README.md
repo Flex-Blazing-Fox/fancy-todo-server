@@ -39,22 +39,20 @@ http://127.0.0.1:3000
     None
     ```
 - Success Response :
+    - Code : 200
+
     ```json
-    {
-        "code": 200,
-        "message": "Success",
-        "data": [
-            {
-                "id": 1,
-                "title": "Create Aplikasi",
-                "description": "Create Aplikasi Fancy Todo",
-                "status": "selesai",
-                "due_date": "2020-06-21T00:00:00.000Z",
-                "createdAt": "2021-06-22T13:59:36.105Z",
-                "updatedAt": "2021-06-22T13:59:36.105Z"
-            }
-        ]
-    }
+    [
+        {
+            "id": 1,
+            "title": "Create Aplikasi",
+            "description": "Create Aplikasi Fancy Todo",
+            "status": "selesai",
+            "due_date": "2020-06-21T00:00:00.000Z",
+            "createdAt": "2021-06-22T13:59:36.105Z",
+            "updatedAt": "2021-06-22T13:59:36.105Z"
+        }
+    ]
     ```
 
 - Error Response :
@@ -81,22 +79,21 @@ http://127.0.0.1:3000
     id
     ```
 - Success Response :
+    - Code : 200
+
     ```json
-    {
-        "code": 200,
-        "message": "Success",
-        "data": [
-            {
-                "id": 1,
-                "title": "Create Aplikasi",
-                "description": "Create Aplikasi Fancy Todo",
-                "status": "selesai",
-                "due_date": "2020-06-21T00:00:00.000Z",
-                "createdAt": "2021-06-22T13:59:36.105Z",
-                "updatedAt": "2021-06-22T13:59:36.105Z"
-            }
-        ]
-    }
+    [
+        {
+            "id": 1,
+            "title": "Create Aplikasi",
+            "description": "Create Aplikasi Fancy Todo",
+            "status": "selesai",
+            "due_date": "2020-06-21T00:00:00.000Z",
+            "createdAt": "2021-06-22T13:59:36.105Z",
+            "updatedAt": "2021-06-22T13:59:36.105Z"
+        }
+    ]
+
     ```
 
 - Error Response Code :
@@ -133,22 +130,20 @@ http://127.0.0.1:3000
     due_date    | 2020-06-22
     
 - Success Response :
+    - Code : 201
+
     ```json
-    {
-        "code": 201,
-        "message": "Success",
-        "data": [
-            {
-                "id": 2,
-                "title": "Membaca",
-                "description": "Membaca Buku Harry Potter",
-                "status": "belum selesai",
-                "due_date": "2020-06-22T00:00:00.000Z",
-                "updatedAt": "2021-06-22T14:20:50.820Z",
-                "createdAt": "2021-06-22T14:20:50.820Z"
-            }
-        ]
-    }
+    [
+        {
+            "id": 2,
+            "title": "Membaca",
+            "description": "Membaca Buku Harry Potter",
+            "status": "belum selesai",
+            "due_date": "2020-06-22T00:00:00.000Z",
+            "updatedAt": "2021-06-22T14:20:50.820Z",
+            "createdAt": "2021-06-22T14:20:50.820Z"
+        }
+    ]
     ```
 
 - Error Response Code :
@@ -182,22 +177,19 @@ http://127.0.0.1:3000
     status      | belum selesai 
     
 - Success Response :
+    - Code : 200
     ```json
-    {
-        "code": 200,
-        "message": "Success",
-        "data": [
-            {
-                "id": 2,
-                "title": "Membaca",
-                "description": "Membaca Buku Harry Potter",
-                "status": "belum selesai",
-                "due_date": "2020-06-22T00:00:00.000Z",
-                "updatedAt": "2021-06-22T14:20:50.820Z",
-                "createdAt": "2021-06-22T14:20:50.820Z"
-            }
-        ]
-    }
+    [
+        {
+            "id": 2,
+            "title": "Membaca",
+            "description": "Membaca Buku Harry Potter",
+            "status": "belum selesai",
+            "due_date": "2020-06-22T00:00:00.000Z",
+            "updatedAt": "2021-06-22T14:20:50.820Z",
+            "createdAt": "2021-06-22T14:20:50.820Z"
+        }
+    ]
     ```
 
 - Error Response Code :
@@ -235,22 +227,19 @@ http://127.0.0.1:3000
     due_date    | 2020-06-22
     
 - Success Response :
+    - Code : 200
     ```json
-    {
-        "code": 200,
-        "message": "Success",
-        "data": [
-            {
-                "id": 2,
-                "title": "Bernyanyi",
-                "description": "Menyanyikan Lagu Indonesia Raya",
-                "status": "selesai",
-                "due_date": "2020-06-22T00:00:00.000Z",
-                "updatedAt": "2021-06-22T14:20:50.820Z",
-                "createdAt": "2021-06-22T14:20:50.820Z"
-            }
-        ]
-    }
+    [
+        {
+            "id": 2,
+            "title": "Bernyanyi",
+            "description": "Menyanyikan Lagu Indonesia Raya",
+            "status": "selesai",
+            "due_date": "2020-06-22T00:00:00.000Z",
+            "updatedAt": "2021-06-22T14:20:50.820Z",
+            "createdAt": "2021-06-22T14:20:50.820Z"
+        }
+    ]
     ```
 
 - Error Response Code :
@@ -278,10 +267,11 @@ http://127.0.0.1:3000
     ```
     
 - Success Response :
+    - Code : 200
+
     ```json
     {
-        "code": 200,
-        "message": "Delete Successfull",
+        "message": "Todo deleted successfully!",
     }
     ```
 

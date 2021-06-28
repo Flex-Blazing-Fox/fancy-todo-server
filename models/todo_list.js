@@ -18,27 +18,28 @@ module.exports = (sequelize, DataTypes) => {
   todo_list.init({
     title:{
       type:DataTypes.STRING,
-      allowNull:{args:false,msg:"Title must be filled"},
+      allowNull:false,
       validate:{
         notEmpty:{args:true,msg:"Title must be filled"},
       }
     },
     description: {
       type:DataTypes.STRING,
-      allowNull:{args:false,msg:"Description must be filled"},
+      allowNull:false,
       validate:{
         notEmpty:{args:true,msg:"Description must be filled"},
       }
     },
     status: {
       type:DataTypes.BOOLEAN,
-      allowNull:{args:false,msg:"Status must be filled"},
+      allowNull:false,
       validate:{
         notEmpty:{args:true,msg:"Status must be filled"},
       }
     },
     due_date:{
       type: DataTypes.DATE,
+      allowNull: false,
       validate:{
         isPost(value){
           let now = new Date()
@@ -47,7 +48,8 @@ module.exports = (sequelize, DataTypes) => {
           if (value < now) {
             throw new Error("Hanya boleh input tanggal sekarang dan setelahnya")
           }
-        }
+        },
+        notEmpty: true
       }
     }, 
     user_id:{

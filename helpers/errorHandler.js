@@ -1,6 +1,7 @@
 const errorHandle = (err,req,res,next)=>{
     let statusCode
     let message 
+    console.log(err.name,"<<<");
     switch (err.name) {
         case 'SequelizeValidationError':
             statusCode = 400
@@ -33,6 +34,10 @@ const errorHandle = (err,req,res,next)=>{
         case 'Error':
             statusCode = 500
             message = 'Internal server error'
+            break;
+        case 'Todo not found':
+            statusCode = 404
+            message = 'Todo not found'
             break;
         default:
             break;

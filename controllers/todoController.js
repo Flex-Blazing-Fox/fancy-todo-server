@@ -24,10 +24,11 @@ class todo{
         todo.status = status
         todo.due_date = due_date
         todo.save()
-        .then(()=>{
+        .then(todo=>{
             res.status(200).json({data:todo,message:"todo successfully updated"})
         })
         .catch((err) => {
+            console.log(err.name,'<<<<');
             next(err)
           });
     }

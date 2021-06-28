@@ -158,7 +158,7 @@ _Todos_
   ```
  {
     "token": "access token"
-}
+ }
 
   ```
 

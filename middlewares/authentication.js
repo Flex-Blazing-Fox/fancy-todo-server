@@ -5,7 +5,7 @@ const authenticate = (req, res, next) => {
     next({ name: "INVALID TOKEN / TOKEN NOT EXIST" });
   } else {
     try {
-      const decodedToken = jwt.verify(req.headers.access_token, "ABCD");
+      const decodedToken = jwt.verify(req.headers.access_token, process.env.JWT_SECRET);
       req.userId = decodedToken.id;
       next();
     } catch {

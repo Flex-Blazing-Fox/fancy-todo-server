@@ -6,7 +6,7 @@ class userController{
         const {email,password} = req.body
         user.create({email,password})
         .then(data =>{
-            res.status(201).json({"message":"Account has been created","data":{email:data.email,password:data.password}})
+            res.status(201).json({"message":"Account has been created","data":{id:data.id,email:data.email}})
         })
         .catch(err=>{
             next(err)
@@ -15,7 +15,6 @@ class userController{
 
     static login(req,res,next){
         const {email,password} = req.body
-        
         user.findOne({
             where:{
                 email:email
@@ -26,8 +25,9 @@ class userController{
             if (result && comparePassword){
                 const payload ={id:result.id}
                 const token = jwt.sign(payload, process.env.JWT_KEY);
-                res.status(200).json({"message":"Login success"})
-            }else{
+                res.status(200).json({"message":"Login success",token})
+            }
+            else{
                 throw {
                     name:'Login gagal'
                 }

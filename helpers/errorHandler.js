@@ -1,5 +1,4 @@
 const errorHandle = (err,req,res,next)=>{
-    console.log(err.message , "<<<<<");
     let statusCode
     let message 
     switch (err.name) {
@@ -22,6 +21,18 @@ const errorHandle = (err,req,res,next)=>{
         case 'invalid access token':
             statusCode = 404
             message = 'Todo not found'
+            break;
+        case 'SequelizeUniqueConstraintError':
+            statusCode = 400
+            message = 'Email has been used'
+            break;
+        case 'TypeError':
+            statusCode = 400
+            message = 'Email not registered'
+            break;
+        case 'Error':
+            statusCode = 500
+            message = 'Internal server error'
             break;
         default:
             break;

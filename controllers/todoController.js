@@ -6,7 +6,7 @@ class todo{
             if (result.length === 0) {
                 res.status(204).json({"message":"Todo tidak ditemukan"})
             }else{
-                res.status(200).json(result)
+                res.status(200).json({todo:result})
             }
         })
         .catch((err) => {
@@ -14,7 +14,7 @@ class todo{
           });
     }
     static listTodo_Id(req,res){
-        res.status(200).json({data:req.todo})
+        res.status(200).json({todo:req.todo})
     }
     static putTodo(req,res,next){
         const {title,description,status,due_date} = req.body

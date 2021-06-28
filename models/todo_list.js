@@ -30,7 +30,13 @@ module.exports = (sequelize, DataTypes) => {
         notEmpty:{args:true,msg:"Description must be filled"},
       }
     },
-    status: DataTypes.BOOLEAN,
+    status: {
+      type:DataTypes.BOOLEAN,
+      allowNull:{args:false,msg:"Status must be filled"},
+      validate:{
+        notEmpty:{args:true,msg:"Status must be filled"},
+      }
+    },
     due_date:{
       type: DataTypes.DATE,
       validate:{

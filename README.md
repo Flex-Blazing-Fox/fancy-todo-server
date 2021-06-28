@@ -212,23 +212,46 @@ Updating the todo record
 Updating the todo's value
 - ### Request Parameter
     The parameter for this API is `{id}`. For example we use `id = 1` for `user1@gmail.com`
+- ### Request Header
+    ```javascript
+    {
+        access_token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNjI0ODgyMzE3fQ.Smeq6lZPxFWHOaBtX3Q3tMP1wbxCZX5QDyGauoai5L0
+    }
+    ```
 - ### Request Body
     ```javascript
     {
         "due_date": "2021-08-31 00:00:00"
     }
     ```
-- ### Request Example
 - ### Response Example
-
-<br/>
+    ```javascript
+    {
+        "id": 1,
+        "title": "Truncating Saved Accounts Data",
+        "description": "After the fix for different accrued interest is merged, the dwh core saving accounts need to be merged.",
+        "status": "done",
+        "due_date": "2021-08-31T00:00:00.000Z",
+        "createdAt": "2021-06-27T04:58:20.839Z",
+        "updatedAt": "2021-06-28T12:49:52.917Z",
+        "user_id": 1
+    }
+    ```
 <img src=https://img.shields.io/badge/DELETE-%2Ftodo%2F%3Aid-blue width=145>
 <br/>
-<br/>
 
+Delete a todo record
 - ### Request Parameter
-- ### Request Body
-- ### Request Example
+    The parameter for this API is `{id}`. For example we use `id = 2` for `user1@gmail.com`
+- ### Request Header
+    ```javascript
+    {
+        access_token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNjI0ODgyMzE3fQ.Smeq6lZPxFWHOaBtX3Q3tMP1wbxCZX5QDyGauoai5L0
+    }
+    ```
 - ### Response Example
-
-<br/>
+    ```javascript
+    {
+        "message": "Record with id 2 successfully deleted"
+    }
+    ```

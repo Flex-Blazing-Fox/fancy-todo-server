@@ -44,7 +44,7 @@ class TodosController {
 
     static putTodo(req, res, next) {
         const {todo} = req
-        const { title, description, status, due_date, userId } = req.body
+        const { title, description, status, due_date} = req.body
         todo.title = title
         todo.description = description
         todo.status = status

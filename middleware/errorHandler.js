@@ -4,7 +4,7 @@ const errorHandler = (err, req, res, next) => {
 
     switch(err.name) {
         case 'LOGIN_FAILED' :
-            statusCode = 401
+            statusCode = 400
             error.push("Login Gagal ! Silahkan cek email dan password")
             break
         case 'IS_NOT_LOGIN' :
@@ -18,15 +18,15 @@ const errorHandler = (err, req, res, next) => {
         case 'USER_DATA_NOT_FOUND':
             statusCode = 404
             error.push("User Data Tidak Ditemukan")
-            break;
+            break
         case 'TODO_NOT_FOUND' :
             statusCode = 404
             error.push("Todo Not Found")
             break
         case 'SequelizeValidationError' :
             statusCode = 400
-            error.push(err.errors[0].message)
-            breaks
+            error.push({"message":err.errors[0].message})
+            break
         case'SequelizeUniqueConstraintError' : 
             statusCode = 400
             error.push({"message" : "Email telah terdaftar"})

@@ -1,7 +1,7 @@
 const { Todo } = require('../models')
 
 class TodoController{
-    static getAll(req, res) {
+    static getAll(req, res, next) {
         Todo.findAll({
             where: {userId: req.userId}
         })
@@ -9,11 +9,11 @@ class TodoController{
             res.status(200).json(data)
         })
         .catch(err => {
-            res.status(500).json(err)
+           next(err)
         })
     }
 
-    static addTodos(req, res) {
+    static addTodos(req, res, next) {
         let { title, description, status, due_date } = req.body
         Todo.create(
             { 
@@ -28,11 +28,7 @@ class TodoController{
             res.status(201).json(data)
         })
         .catch(err => {
-            if(err.name = 'SequelizeValidationError'){
-                res.status(400).json({"message":err.errors[0].message})
-            }else {
-                res.status(500).json(err)
-            }
+            next(err)
         })
     }
 
@@ -41,7 +37,7 @@ class TodoController{
         res.status(200).json(req.todos)
     }
 
-    static updateTodos(req, res) {
+    static updateTodos(req, res, next) {
 
         const { title, description, status, due_date } = req.body
         const { todos } = req
@@ -57,15 +53,11 @@ class TodoController{
             res.status(200).json({data:todos})
         })
         .catch(err => {
-            if(err.name = 'SequelizeValidationError'){
-                res.status(400).json({"message":err.errors[0].message})
-            }else {
-                res.status(500).json(err)
-            }
+            next(err)
         })
     }
 
-    static statusUpdate(req, res) {
+    static statusUpdate(req, res, next) {
         const { status } = req.body
         const { todos } = req
        
@@ -77,11 +69,11 @@ class TodoController{
             res.status(200).json({data:todos})
         })
         .catch(err => {
-            res.status(500).json(err)
+            next(err)
         })
     }
 
-    static deleteTodos(req, res) {
+    static deleteTodos(req, res, next) {
         const { todos } = req
 
         todos
@@ -90,7 +82,7 @@ class TodoController{
             res.status(200).json({ message: "Todo deleted successfully!" })
         })
         .catch(err => {
-            res.status(500).json(err)
+            next(err)
         })
     }
 }

@@ -3,7 +3,7 @@ const jwt = require('jsonwebtoken')
 const { User } = require('../models')
 
 class UserController {
-    static register(req, res) {
+    static register(req, res, next) {
         const { email, password } = req.body 
 
         User.create({ email, password })
@@ -11,7 +11,7 @@ class UserController {
                 res.status(201).json({"message": "Pendaftaran Berhasil"})
             })
             .catch(err => {
-                res.status(500).json(err)
+               next(err)
             })
     }
 
@@ -29,15 +29,11 @@ class UserController {
 
                     res.status(200).json({"message":"Success", access_token})
                 } else {
-                    throw {
-                        "success" : false,
-                        "code" : 401,
-                        "message" : "Gagal"
-                    }
+                   throw {name:'LOGIN_FAILED'}
                 }
             })
             .catch(err => {
-                res.status(500).json(err)
+               next(err)
             })
     }
 }

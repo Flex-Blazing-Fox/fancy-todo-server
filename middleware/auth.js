@@ -1,18 +1,31 @@
 const jwt = require('jsonwebtoken')
-const { Todo } = require('../models')
+const { Todo, User } = require('../models')
 
 const authentication = (req, res, next) => {
     if(!req.headers.access_token){
-        return res.status(401).json({"message":"Silahkan login terlebih dahulu"})
+        throw {name: 'IS_NOT_LOGIN'}
     }
 
     try {
         const decoded = jwt.verify(req.headers.access_token, process.env.ACCESS_TOKEN)
         req.userId = decoded.id
-        next()
+
+        User.findOne({
+            where: {id:decoded.id}
+        })
+        .then(result => {
+            if(result){
+                next()
+            } else {
+                throw {name:'USER_DATA_NOT_FOUND'}
+            }
+        })
+        .catch(err => {
+            next(err)
+        })
     }
     catch(err){
-        res.status(404).json({"message":"Invalid access token"})
+        throw {name:'INVALID_TOKEN'}
     }
 }
 
@@ -23,14 +36,14 @@ const authorization = (req, res, next) => {
     })
     .then(result => {
         if(!result){
-            res.status(404).json("Todo Not Found")
+            throw {name:'TODO_NOT_FOUND'}
         } else {
             req.todos = result
             next()
         }
     })
     .catch(err => {
-        res.status(505).json(err)
+        next(err)
     })
 }
 

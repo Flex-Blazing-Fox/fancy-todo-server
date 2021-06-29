@@ -31,6 +31,10 @@ const errorHandlers = (err, req, res, next) => {
       statusCode = 404
       message = 'todo not found'
       break
+    case 'UserNotFound':
+      statusCode = 404
+      message = 'user not found'
+      break
     default:
       statusCode = 500
       message = 'Internal server error'

@@ -11,7 +11,7 @@ todo_db
 ```
 #### Package
 ```
-pg, express, sequelize, nodemon, bcrypt, dotenv, jsonwebtoken
+pg, express, sequelize, nodemon, bcrypt, dotenv, jsonwebtoken, cors
 ```
 
 #### Migration

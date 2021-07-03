@@ -78,8 +78,8 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
         type: DataTypes.DATE,
         validate: {
-          isAfter: {
-            args: new Date().toISOString(),
+          min: {
+            args: new Date().toLocaleDateString(),
             msg: 'tanggal sudah lewat dari tanggal hari ini',
           },
           notEmpty: {

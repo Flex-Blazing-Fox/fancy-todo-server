@@ -5,7 +5,10 @@ class TodosController {
     const { id } = req.user
 
     try {
-      const todos = await Todo.findAll({ where: { user_id: +id } })
+      const todos = await Todo.findAll({
+        where: { user_id: +id },
+        order: ['due_date'],
+      })
 
       return res.status(200).json(todos)
     } catch (err) {

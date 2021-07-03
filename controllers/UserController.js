@@ -1,6 +1,8 @@
 const { User } = require('../models')
 const { generateToken } = require('../helpers/jsonwebtoken')
 const bcrypt = require('bcrypt')
+const { OAuth2Client } = require('google-auth-library')
+const client = new OAuth2Client(process.env.CLIENT_ID)
 
 class UserController {
   static async register(req, res, next) {
@@ -50,7 +52,46 @@ class UserController {
 
       return res.status(200).json({ token })
     } catch (err) {
-      return next(err)
+      next(err)
+    }
+  }
+
+  static async googleLogin(req, res, next) {
+    try {
+      const { id_token } = req.body
+      const ticket = await client.verifyIdToken({
+        idToken: id_token,
+        audience: process.env.CLIENT_ID,
+      })
+      const payload = ticket.getPayload()
+      const email = payload['email']
+
+      const user = await User.findOne({ where: { email } })
+
+      if (!user) {
+        const newUser = await User.create({
+          email,
+          password: process.env.DEFAULT_PASSWORD
+        })
+
+        const token = generateToken({
+          id: newUser.id,
+          email: newUser.email,
+        })
+
+        return res.status(201).json({ token, email: newUser.email })
+      }
+
+      const clientPayload = {
+        id: user.id,
+        email: user.id,
+      }
+
+      const token = generateToken(clientPayload)
+
+      return res.status(200).json({ token, email })
+    } catch (err) {
+      next(err)
     }
   }
 }

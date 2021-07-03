@@ -530,7 +530,7 @@ describe("Todo API", () => {
           description:
             "After the fix for different accrued interest is merged, the dwh core saving accounts need to be merged.",
           status: "done",
-          due_date: "2021-07-01 00:00:00",
+          due_date: "2021-08-01 00:00:00",
         })
         .end((err, response) => {
           response.should.have.status(200);
@@ -546,7 +546,7 @@ describe("Todo API", () => {
           response.body.should.have.property("status").eq("done");
           response.body.should.have
             .property("due_date")
-            .eq("2021-07-01T00:00:00.000Z");
+            .eq("2021-08-01T00:00:00.000Z");
           done();
         });
     });

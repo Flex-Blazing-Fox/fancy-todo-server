@@ -8,7 +8,7 @@
     > `$ npm run dev`
 
 **Base URL** <br>
-http://localhost:3000  
+http://localhost:5000  
 
 **Environment Variable** <br>
 > Save your environment variable in .env file and don't forget to add .env to .gitignore.

@@ -29,6 +29,7 @@ class todoController {
   }
   static createTodo(req, res, next) {
     let { title, description, status, due_date } = req.body;
+    console.log(title, description, status, due_date)
     Todo.create(
       {
         title,

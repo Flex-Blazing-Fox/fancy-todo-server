@@ -4,7 +4,9 @@ const errorHandler = (err, req, res, next) => {
   switch (err.name) {
     case "EMAIL / PASSWORD AUTHENTICATION FAIL":
       statusCode = 401;
-      error.push("Email or password combination can't be found");
+      error.push(
+        "Email or password combination can't be found. If you're authenticating by Github, make sure that you have public email."
+      );
       break;
     case "INVALID TOKEN / TOKEN NOT EXIST":
       statusCode = 401;

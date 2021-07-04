@@ -48,7 +48,8 @@ class userController {
     const { code } = req.body;
     let tokens = {},
       userEmail,
-      userName;
+      userName,
+      repoData;
     fetch("https://github.com/login/oauth/access_token", {
       method: "POST",
       headers: {
@@ -66,22 +67,33 @@ class userController {
       .then((result) => {
         let params = new URLSearchParams(result);
         tokens.github_access_token = params.get("access_token");
-        return fetch("https://api.github.com/user", {
+        let userPromise = fetch("https://api.github.com/user", {
           method: "GET",
           headers: {
             Accept: "application/vnd.github.v3+json",
             Authorization: `token ${tokens.github_access_token}`,
           },
         });
+        let repoPromise = fetch("https://api.github.com/user/repos", {
+          method: "GET",
+          headers: {
+            Accept: "application/vnd.github.v3+json",
+            Authorization: `token ${tokens.github_access_token}`,
+          },
+        });
+        return Promise.all([userPromise, repoPromise]);
       })
-      .then((result) => result.json())
       .then((result) => {
-        userName = result.name;
-        if (result.email) {
-          userEmail = result.email;
+        return Promise.all([result[0].json(), result[1].json()]);
+      })
+      .then((result) => {
+        userName = result[0].name;
+        repoData = result[1];
+        if (result[0].email) {
+          userEmail = result[0].email;
           return User.findOne({
             where: {
-              email: result.email,
+              email: result[0].email,
             },
           });
         } else {
@@ -110,6 +122,7 @@ class userController {
                 access_token: accessToken,
                 github_access_token: tokens.github_access_token,
                 username: userName,
+                repoData: JSON.stringify(repoData),
               });
             })
             .catch(() => {
@@ -124,6 +137,7 @@ class userController {
             access_token: accessToken,
             github_access_token: tokens.github_access_token,
             username: userName,
+            repoData: JSON.stringify(repoData),
           });
         }
       })

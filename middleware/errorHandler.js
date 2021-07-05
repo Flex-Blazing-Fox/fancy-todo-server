@@ -33,7 +33,7 @@ const errorHandler = (err, req, res, next) => {
             break
         default : 
             statusCode = 500
-            errorr.push(err.name)
+            error.push(err.name)
             break
     }
 

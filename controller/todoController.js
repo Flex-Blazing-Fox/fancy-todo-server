@@ -5,7 +5,9 @@ class TodoController{
     static readAll(req, res, next) {
         Todo.findAll({where:{
             user_id: req.user_id
-        }})
+            },
+            order: [['due_date', 'ASC']]
+        })
         .then(result => {
             if(result.length>0){
                 res.status(200).json(result)

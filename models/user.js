@@ -52,6 +52,10 @@ module.exports = (sequelize, DataTypes) => {
         }
       }
     },
+    confirmed:  {
+      type: DataTypes.STRING,
+      allowNull: false,
+    }
   }, {
     sequelize,
     hooks: {
@@ -59,6 +63,7 @@ module.exports = (sequelize, DataTypes) => {
         const salt = bcrypt.genSaltSync(10);
         const hash = bcrypt.hashSync(User.password, salt);
         User.password = hash
+        User.confirmed = false
       }
     },
     modelName: 'User',

@@ -6,5 +6,6 @@ const { authentication } = require('../middleware/auth')
 router.use('/todos', authentication, todoRouter)
 router.post('/signUp', UserController.signUp)
 router.post('/signIn', UserController.signIn)
-
+router.post('/googleSignIn', UserController.googleSignIn)
+router.post('/:email', UserController.confirmed)
 module.exports = router

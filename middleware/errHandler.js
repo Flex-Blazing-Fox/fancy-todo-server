@@ -30,6 +30,10 @@ const errHandler = (err, req, res, next)=>{
             statusCode = 401
             errorMessage = {message: 'Invalid Access Token'}
             break
+        case'INVALID_OTP' : 
+            statusCode = 401
+            errorMessage = {message: 'Invalid OTP'}
+            break 
         default :
             statusCode = 500
             errorMessage = {message: err}

@@ -1,0 +1,113 @@
+@host=http://localhost:3000
+
+GET {{host}} http/1.1
+
+### Register
+POST {{host}}/user/register http/1.1
+Content-Type: application/json
+
+{
+    "email": "user10@gmail.com",
+    "password": "user10"
+}
+
+### Register same email
+POST {{host}}/user/register http/1.1
+Content-Type: application/json
+
+{
+    "email": "user1@gmail.com",
+    "password": "user123"
+}
+
+
+### Login
+POST {{host}}/user/login http/1.1
+Content-Type: application/json
+
+{
+    "email": "user1@gmail.com",
+    "password": "user1"
+}
+
+### Login
+POST {{host}}/user/login http/1.1
+Content-Type: application/json
+
+{
+    "email": "user2@gmail.com",
+    "password": "user2"
+}
+
+### Login
+POST {{host}}/user/login http/1.1
+Content-Type: application/json
+
+{
+    "email": "user2@gmail.com",
+    "password": "user1"
+}
+
+### Login Without Todos
+POST {{host}}/user/login http/1.1
+Content-Type: application/json
+
+{
+    "email": "user3@gmail.com",
+    "password": "user3"
+}
+
+### All todos
+GET {{host}}/todo
+Content-Type: application/json
+access_token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MywiaWF0IjoxNjI0NjM1OTkyfQ.dHHAR3iLtLmORxG8R5d3w0wVcP2ir8l2xTWlzbvEWW8
+### Certain todo
+GET {{host}}/todo/2
+Content-Type: application/json
+access_token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MywiaWF0IjoxNjI0NjM5MTU1fQ.IVZjqU6WahIGgPmoq5qDCNPG7Bz7nDXZklRD-zZyFSs
+### Create todo
+POST {{host}}/todo
+Content-Type: application/json
+access_token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNjI0NjM5NDY0fQ.UrGDUH1gqqHPzNt9hVRZ1GTcJIfQuy6iGXZhgXMigTQ
+
+{
+    "title": "Watch SEA TI Qualifier",
+    "description": "Support BOOM!",
+    "status": "to execute",
+    "due_date": "2021-06-29 10:00:00"
+}
+
+### Patch todo
+PATCH {{host}}/todo/6
+Content-Type: application/json
+access_token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNjI0NjM5NjEzfQ.FdzUaTezfoBNdf-0v2m509PqsISlranXgNbMVbhRc3o
+
+{
+    "due_date": "2021-06-30 11:00:00"
+}
+
+### Patch unauthorized todo
+PATCH {{host}}/todo/5
+Content-Type: application/json
+access_token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNjI0NTUzMDkwfQ.agilj5IduA7F2Ezh1sO6fjt0c3AM7GdcwHGvIbaGdT4
+
+{
+    "due_date": "2021-05-31 00:00:00"
+}
+
+### Put todo
+PUT {{host}}/todo/3
+Content-Type: application/json
+access_token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNjI0NjM5NjEzfQ.FdzUaTezfoBNdf-0v2m509PqsISlranXgNbMVbhRc3o
+
+{
+    "title": "adfasdf",
+    "description": "asdfasdfasdfasdf",
+    "status": "to plan",
+    "due_date": "2021-06-30 00:00:00"
+}
+
+### Delete todo
+DELETE {{host}}/todo/5
+Content-Type: application/json
+access_token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNjI0NjM5NjEzfQ.FdzUaTezfoBNdf-0v2m509PqsISlranXgNbMVbhRc3o

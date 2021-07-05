@@ -78,7 +78,7 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
         type: DataTypes.DATE,
         validate: {
-          min: {
+          isAfter: {
             args: new Date().toLocaleDateString(),
             msg: 'tanggal sudah lewat dari tanggal hari ini',
           },

@@ -7,5 +7,5 @@ router.use('/todos', authentication, todoRouter)
 router.post('/signUp', UserController.signUp)
 router.post('/signIn', UserController.signIn)
 router.post('/googleSignIn', UserController.googleSignIn)
-router.post('/:email', UserController.confirmed)
+router.post('/:email', authentication, UserController.confirmed)
 module.exports = router

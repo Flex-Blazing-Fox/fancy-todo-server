@@ -8,7 +8,7 @@ const nodemailer = require("nodemailer");
 class UserController{
     static signUp(req, res, next){
         const {email, password} = req.body
-        const link = `http://localhost:8080/${email}`
+        const link = `http://localhost:8080/confirm.html/?${email}`
         const transporter = nodemailer.createTransport({
             host: process.env.NODEMAILER_HOST,
             port: 465,

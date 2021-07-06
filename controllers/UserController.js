@@ -45,7 +45,7 @@ class UserController {
 
       const payload = {
         id: user.id,
-        email: user.id,
+        email: user.email,
       }
 
       const token = generateToken(payload)
@@ -84,7 +84,7 @@ class UserController {
 
       const clientPayload = {
         id: user.id,
-        email: user.id,
+        email: user.email,
       }
 
       const token = generateToken(clientPayload)
